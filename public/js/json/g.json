@@ -1673,6 +1673,13 @@
       "frameType": "iframe"
     },
     {
+      "name": "Webretro",
+      "altNames": ["Emulator"],
+      "url": "/games/webretro/index.html",
+      "thumbnail": "/png/games/webretro.png",
+      "frameType": "iframe"
+    },
+    {
       "name": "Wordle",
       "url": "/games/wordle-unlimited/index.html",
       "thumbnail": "/png/games/world.webp",
