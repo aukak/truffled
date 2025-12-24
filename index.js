@@ -63,6 +63,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static("public"));
+app.use(express.static("assets"));
 app.use("/active/", express.static(uvPath));
 app.use("/libcurl/", express.static(libcurlPath));
 app.use("/baremux/", express.static(baremuxPath));
