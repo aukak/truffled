@@ -25,9 +25,9 @@
 		"dotenv": "^17.2.3",
 		"cors": "^2.8.5",
 		"@titaniumnetwork-dev/ultraviolet": "^3.2.10",
-		"@mercuryworkshop/bare-mux": "^2.1.7",
+		"@mercuryworkshop/bare-mux": "^2.1.8",
 		"@mercuryworkshop/libcurl-transport": "^1.5.2",
-		"@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-1.0.2-dev.tgz",
+		"@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
 		"@mercuryworkshop/wisp-js": "^0.4.1",
 		"bufferutil": "^4.1.0",
 		"ws": "^8.18.3"
