@@ -1,0 +1,94 @@
+{
+  "games": [
+    {
+      "name": "Exthang3r",
+      "url": "/tools/ext.html",
+      "thumbnail": "png/tools/exthang3r.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Aerogel",
+      "url": "/extra/ai/index.html",
+      "thumbnail": "extra/ai/aerogel.webp",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Auk",
+      "url": "/tools/auk/index.html",
+      "thumbnail": "tools/auk/auk.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Extprinter",
+      "url": "/tools/extp.html",
+      "thumbnail": "png/tools/test.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Sh1mmer",
+      "url": "/tools/sh1mmer/index.html",
+      "thumbnail": "tools/sh1mmer/assets/icon.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Gdg",
+      "url": "/tools/gdg/index.html",
+      "thumbnail": "tools/gdg/gdg.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Ruffle",
+      "url": "/tools/ruffle.html",
+      "thumbnail": "png/tools/ruf.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Voxiles",
+      "url": "/tools/vox.html",
+      "thumbnail": "png/tools/VOX.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "N64",
+      "url": "/tools/n64.html",
+      "thumbnail": "png/tools/n64.webp",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Tierlist",
+      "url": "/extra/baddies.html",
+      "thumbnail": "png/tools/list.png",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Play.js",
+      "url": "/tools/playjs/index.html",
+      "thumbnail": "png/tools/play.webp",
+      "frameType": "iframe"
+    },
+    {
+      "name": "Camera to ASCII",
+      "url": "/tools/ascii/index.html",
+      "thumbnail": "tools/text.webp",
+      "frameType": "iframe" 
+    },
+    {
+      "name": "GoGuardian Bypass",
+      "url": "/tools/gog.html",
+      "thumbnail": "png/tools/gog.webp",
+      "frameType": "iframe"
+    },
+     {
+      "name": "Godot 3.7",
+      "url": "/tools/godot/godot.tools.html",
+      "thumbnail": "png/tools/g.svg",
+      "frameType": "iframe" 
+    },
+     {
+      "name": "Azahar",
+      "url": "/tools/axa/index.html",
+      "thumbnail": "png/tools/azahar.webp",
+      "frameType": "iframe" 
+    }
+  ]
+}

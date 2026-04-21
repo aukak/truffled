@@ -6,7 +6,6 @@
     <link rel="icon" type="image/png" href="png/logo.png" />
     <link rel="manifest" href="js/json/manifest.json"/>
     <title>Truffled - Education</title>
-    <meta charset="UTF-8">
     <meta name="title" content="Truffled - Interactive Learning Resources">
     <meta name="description" content="Truffled is an educational platform offering interactive activities, brain-training challenges, and creative learning tools for students.">
     <meta property="og:type" content="website">
@@ -26,72 +25,52 @@
     <link rel="stylesheet" href="https://atugatran.github.io/FontAwesome6Pro/css/all.min.css" />
    </head>
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PXHK7Q7G3Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PXHK7Q7G3Z');
-</script>
    <script>
-      document.addEventListener("keydown", function(event) {
-        if (event.key === "`") {
-          window.location.href = "/extra/szvy.png";
-        }
-      });
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-PXHK7Q7G3Z');
    </script>
    <body class="index-page">
       <div id="seo-content" aria-hidden="true">
         <div class="school-nav">
           <h2 class="logo">Truffled</h2>
         </div>
-        
         <div class="hero-section">
           <h1>One secure place for all your learning</h1>
           <p class="tagline">Connecting students and teachers to the educational resources they need</p>
           <span class="cta-button">Get Started</span>
         </div>
-        
         <div class="main-content">
           <p class="intro-text">Truffled is a comprehensive education platform trusted by students, teachers, and schools nationwide. Access all your courses, study materials, and learning tools in one secure, easy-to-use platform.</p>
-          
           <div class="features-grid">
             <section>
               <h2>Academic Subjects</h2>
               <p>Mathematics, Science, English, History, Literature, Writing, Reading, Social Studies, Geography, Biology, Chemistry, Physics, Algebra, Geometry, Calculus, Statistics, Computer Science, Programming, Foreign Languages, Art, Music</p>
             </section>
-            
             <section>
               <h2>Educational Services</h2>
               <p>Online courses, college credit, exam preparation, test prep, tutoring, homework help, study guides, practice tests, educational videos, interactive lessons, learning resources, curriculum development, academic support, student success</p>
             </section>
-            
             <section>
               <h2>All Student Levels</h2>
               <p>K-12 education, elementary school, middle school, high school, college, university, graduate school, continuing education, adult learning, professional development, certification programs, degree programs, homeschool education</p>
             </section>
-            
             <section>
               <h2>Test Preparation</h2>
               <p>SAT prep, ACT prep, GRE prep, GMAT prep, LSAT prep, MCAT prep, AP courses, Advanced Placement, standardized tests, college entrance exams, professional certification exams, state assessments, final exams, midterms</p>
             </section>
-            
             <section>
               <h3>Learning Methods</h3>
               <p>Interactive learning, video lessons, practice quizzes, flashcards, study notes, educational games, adaptive learning, personalized education, self-paced learning, collaborative learning, project-based learning, STEM education, critical thinking, problem solving</p>
             </section>
           </div>
-          
           <div class="trust-section">
             <h3>Trusted by schools nationwide</h3>
             <p>Join thousands of students and educators using Truffled to power digital learning</p>
           </div>
         </div>
-        
-        <div class="school-footer">
-          <p>© 2024 Truffled • Empowering education through technology</p>
-        </div>
       </div>
-      
       <div class="custom-cursor"></div>
       <div class="navbar-right">
           <a href="/"><img src="png/house-solid.svg" alt="h"></a>
@@ -108,6 +87,11 @@
             <input id="uv-address" type="text" placeholder="Search Google or type an URL" class="form__input" />
             <div id="random-text" style="font-size: 0.9em; color: gray;"></div>
          </form>
+         <div class="legal-links" aria-label="site info">
+            <button type="button" class="legal-trigger" data-info-panel="credits">credits</button>
+            <span class="legal-links__divider" aria-hidden="true"></span>
+            <button type="button" class="legal-trigger" data-info-panel="dmca">dmca</button>
+         </div>
          <div class="desc left-margin">
             <p id="uv-error"></p>
             <pre id="uv-error-code"></pre>
@@ -115,93 +99,165 @@
          <script>
           const form = document.querySelector("#uv-form");
           const input = document.querySelector("#uv-address");
-          console.log(form)
-          console.log(input)
+          const PROXY_SETTING_KEY = "proxyBackend";
+          const PENDING_PROXY_URL_KEY = "pendingProxyUrl";
+          function isUrl(val = "") {
+            if (
+              /^http(s?):\/\//.test(val) ||
+              (val.includes(".") && val.slice(0, 1) !== " ")
+            )
+              return true;
+            return false;
+          }
+          function normalizeSearchInput(value) {
+            let url = value.trim();
+            if (!isUrl(url)) {
+              url = "https://duckduckgo.com/?t=h_&ia=web&q=" + encodeURIComponent(url);
+            } else if (!(url.startsWith("https://") || url.startsWith("http://"))) {
+              url = "https://" + url;
+            }
+            return url;
+          }
+          function getSavedProxyBackend() {
+            return localStorage.getItem(PROXY_SETTING_KEY) || "uv";
+          }
+          function getEffectiveProxyBackend(value = getSavedProxyBackend()) {
+            return value === "scramjet" ? "scramjet" : "uv";
+          }
           document.addEventListener("DOMContentLoaded", function () {
-          form.addEventListener("submit", async (event) => {
-            console.log('hi')
-            event.preventDefault();
-            window.navigator.serviceWorker
-            .register("/active/sw.js", {
-              scope: __uv$config.prefix,
-            })
-            .then(() => {
-              let url = input.value.trim();
-              if (!isUrl(url)) url = "https://duckduckgo.com/?t=h_&ia=web&q=" + url;
-              else if (!(url.startsWith("https://") || url.startsWith("http://")))
-                url = "http://" + url;
+            form.addEventListener("submit", async (event) => {
+              event.preventDefault();
+              const rawValue = input.value.trim();
+              if (!rawValue) return;
+              const url = normalizeSearchInput(rawValue);
+              const backend = getEffectiveProxyBackend();
+              sessionStorage.setItem(PENDING_PROXY_URL_KEY, url);
               sessionStorage.setItem("encodedUrl", __uv$config.encodeUrl(url));
+              sessionStorage.setItem("activeProxyBackend", backend);
               location.href = "search.html";
             });
-      });
-    });
-    function isUrl(val = "") {
-      if (
-        /^http(s?):\/\//.test(val) ||
-        (val.includes(".") && val.slice(0, 1) !== " ")
-      )
-        return true;
-      return false;
-    }
-            const texts = [
-              "Games with your Desire!", "auk.cc on tiktok", "the nether...", "Gatekeep this at all cost",
-              "im a bun im a bun", "Join the discord for more links", "mttg in the works", "linux > macos",
-              "king lebron...", "I need money, cashapp: $pumpedkidd", "Chickenbutt", "mario pleaseeeeeee",
-              "reeeeee boiiiiiiii lol moment", "mexi has a good site", "tyler is the best artist",
-              "i all i want to do is mehhhhhhhhhh", "sealie wants my milkshakes -frogie1", "i am BIGCHUNGUS BOIIII",
-              "i have 32.14$ on adsterra 5/8/25", "highschool scares me", "nah nah nah call me daddy",
-              "gurt: sybau", "teto, miku, neru", "gamprodev🥷", "hawk1: you wanna say something?",
-              "hawk2: uhhhhhhhhhh", "my school hates me", "dab on the haters", "the f students, there my inventors",
-              "nickolas", "greyson mess fanclub", "There's a sun around the bend.", "iis2 > nightly manor",
-              "20200229 2", "who tryna go to 165 S Main St #100b, Harrisonburg, VA 22801",
-              "shout out to corbin. rip him cuz dmca", "shape world", "frogies sybersecurity class",
-              "eagler craft server soon", "complex.lat", "grigger from limbus company", "BABY SHLAWNG",
-              "npm run fart", "41 minutes", "67 mango st", "windhawk is fireeeee", "porting games is my passion",
-              "the gazebo family", "nick playing in recess", "play bogs niche items on rbx",
-              "can you translate that for me mexi?", "scooby doo pa pa", "bro can we just exile this:",
-              "profile system was a hell to make.", "w faps?", "l faps?", "trash faps?", "illegal faps?",
-              "amazing faps?", "steamrip my goat <333", "when theres rain, theres thunder...",
-              "los pollos is ass at fort 🤣", "bocchi the rock firee", "cs2 bhop back baby <33",
-              "effoc", "barber shop", "steven here", "MEOWL", "truman show", "MEOWL", "MEOWL", "MEOWL", "MEOWL",
-              "toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma ",
-              "you need to NERD OUT", "labubu?", "yall have a good night", "zack is a piggy", "OINK OINK OINK OINK OINK OINK", "jobi :eyes:", "AYE WASSUP COOKIE. calm down g",
-              "gucci bucket gucci bucket", "silksong soon...", "tn please partner again", "What??? is this even possible???????????", "eunoia is a CLANKER",
-              "ref do something","peterbot word", "bonnie", "indian nick", 
-              "i wrap it like a jolly rancher","https://discord.gg/CDd8BFcyWW","people will call me a skid, js say my site is bad.", "i love mac demarco"
-            ];
-            const selected = texts[Math.floor(Math.random() * texts.length)];
-            const container = document.getElementById("random-text");
-            container.innerHTML = "";
-            const textNode = document.createElement("span");
-            textNode.textContent = selected;
-            container.appendChild(textNode);
-            if (selected === "mario pleaseeeeeee") {
-              const img = document.createElement("img");
-              img.src = "/extra/mario.png";
-              img.alt = "pleaseeeeeee";
-              img.style.display = "block";
-              img.style.marginTop = "10px";
-              img.style.height = "200px";
-              img.onerror = () => {
-                alert("Image not found at /extra/mario.png, check your file path.");
-              };
-              container.appendChild(img);
-            }
+          });
+          const texts = [
+            "Games with your Desire!", "laugtherhouse? that sound awesome, i love you laugh","auk.cc on tiktok", "the nether...", "Gatekeep this at all cost",
+            "im a bun im a bun", "Join the discord for more links", "mttg in the works", "linux > macos",
+            "king lebron...", "I need money, cashapp: $pumpedkidd", "Chickenbutt", "mario pleaseeeeeee",
+            "reeeeee boiiiiiiii lol moment", "mexi has a good site", "tyler is the best artist",
+            "i all i want to do is mehhhhhhhhhh", "sealie wants my milkshakes -frogie1", "i am BIGCHUNGUS BOIIII",
+            "i have 32.14$ on adsterra 5/8/25", "highschool scares me", "nah nah nah call me daddy",
+            "gurt: sybau", "teto, miku, neru", "gamprodev🥷", "hawk1: you wanna say something?",
+            "hawk2: uhhhhhhhhhh", "my school hates me", "dab on the haters", "the f students, there my inventors",
+            "nickolas", "greyson mess fanclub", "There's a sun around the bend.", "iis2 > nightly manor",
+            "20200229 2", "who tryna go to 165 S Main St #100b, Harrisonburg, VA 22801",
+            "shout out to corbin. rip him cuz dmca", "shape world", "frogies sybersecurity class",
+            "eagler craft server soon", "complex.lat", "grigger from limbus company", "BABY SHLAWNG",
+            "npm run fart", "41 minutes", "67 mango st", "windhawk is fireeeee", "porting games is my passion",
+            "the gazebo family", "nick playing in recess", "play bogs niche items on rbx",
+            "can you translate that for me mexi?", "scooby doo pa pa", "bro can we just exile this:",
+            "profile system was a hell to make.", "w faps?", "l faps?", "trash faps?", "illegal faps?",
+            "amazing faps?", "steamrip my goat <333", "when theres rain, theres thunder...",
+            "los pollos is ass at fort 🤣", "bocchi the rock firee", "cs2 bhop back baby <33",
+            "effoc", "barber shop", "steven here", "MEOWL", "truman show", "MEOWL", "MEOWL", "MEOWL", "MEOWL",
+            "toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma toma ",
+            "you need to NERD OUT", "labubu?", "yall have a good night", "zack is a piggy", "OINK OINK OINK OINK OINK OINK", "jobi :eyes:", "AYE WASSUP COOKIE. calm down g",
+            "gucci bucket gucci bucket", "silksong soon...", "tn please partner again", "What??? is this even possible???????????", "eunoia is a CLANKER",
+            "ref do something","peterbot word", "bonnie", "indian nick",
+            "i wrap it like a jolly rancher","https://discord.gg/CDd8BFcyWW","people will call me a skid, js say my site is bad.", "i love mac demarco"
+          ];
+          const selected = texts[Math.floor(Math.random() * texts.length)];
+          const container = document.getElementById("random-text");
+          container.innerHTML = "";
+          const textNode = document.createElement("span");
+          textNode.textContent = selected;
+          container.appendChild(textNode);
+          if (selected === "mario pleaseeeeeee") {
+            const img = document.createElement("img");
+            img.src = "/extra/mario.png";
+            img.alt = "pleaseeeeeee";
+            img.style.display = "block";
+            img.style.marginTop = "10px";
+            img.style.height = "200px";
+            img.onerror = () => {
+              alert("Image not found at /extra/mario.png, check your file path.");
+            };
+            container.appendChild(img);
+          }
          </script>
+      </div>
+      <div id="info-modal" class="info-modal" aria-hidden="true">
+         <div class="info-modal__backdrop" data-info-close></div>
+         <section class="info-dialog" role="dialog" aria-modal="true" aria-labelledby="info-title">
+            <div class="info-dialog__header">
+              <h2 id="info-title">credits</h2>
+            </div>
+            <div class="info-dialog__body">
+               <article id="info-panel-credits" class="info-panel is-active" role="tabpanel" aria-labelledby="info-title">
+                  <p>bog - coding everything on site (owner), pages and some webports</p>
+                  <p>scramjet & uv static - mercury workshop</p>
+                  <p>webports - breadbb, 98corbins, slqnt, snubby, shxyder, reeyuki, r58playz, velzie, woahcrackers, sexyplankton, peakyrexed, cirius, bubblfan, shortpie, highsenberg, boolonx, leah, robert, sky, vk6, dizzy, frogiee1</p>
+                  <p>frogiee1 - help on search page</p>
+                  <p>akane - help with dedicated server</p>
+                  <p>perc - help with proxy</p>
+               </article>
+               <article id="info-panel-dmca" class="info-panel" role="tabpanel" aria-labelledby="info-title" hidden>
+                  <p>Truffled is under <a href="https://github.com/aukak/truffled?tab=MIT-1-ov-file#" style="color: inherit; text-decoration: underline;">MIT License</a></p>
+                  <p>If you are a copyright owner and believe that your work has been used without permission, please email <a href="mailto:bog@truffled.lol" style="color: inherit; text-decoration: underline;">bog@truffled.lol</a>, anything else should be sent to <a href="https://discord.gg/truffled" style="color: inherit; text-decoration: underline;">discord.gg/truffled</a></p>
+                  <p>Please note that the information provided is accurate and that you are authorized to act for the copyright owner; Your work will be removed respecting the copyright holder's rights.</p>
+                </article>
+            </div>
+         </section>
       </div>
       <script src="/active/uv.bundle.js" charset="UTF-8" defer></script>
       <script src="/active/uv.config.js" charset="UTF-8" defer></script>
+      <script src="/active/register-sw.js" charset="UTF-8" defer></script>
       <script src="/js/panic.js"></script>
-      <script src="/js/right.js"></script>
+      <script src="js/cloak.js"></script>
       <script>
       window.addEventListener('load', function() {
         setTimeout(function() {
           const seoContent = document.getElementById('seo-content');
           if (seoContent) {
-            seoContent.style.display = 'none';
+          seoContent.style.display = 'none';
           }
-        }, 1);
+        }, 0);
       });
+      (function () {
+        const modal = document.getElementById("info-modal");
+        const title = document.getElementById("info-title");
+        const triggers = Array.from(document.querySelectorAll(".legal-trigger"));
+        const panels = {
+          credits: document.getElementById("info-panel-credits"),
+          dmca: document.getElementById("info-panel-dmca"),
+        };
+        function setActivePanel(panelName) {
+          const normalizedPanel = panels[panelName] ? panelName : "credits";
+          title.textContent = normalizedPanel;
+          Object.entries(panels).forEach(([name, panel]) => {
+          const isActive = name === normalizedPanel;
+          panel.hidden = !isActive;
+          panel.classList.toggle("is-active", isActive);
+          });
+          }
+        function openModal(panelName) {
+          setActivePanel(panelName);
+          modal.classList.add("is-open");
+          modal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("modal-open");
+          }
+        function closeModal() {
+          modal.classList.remove("is-open");
+          modal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+          }
+        triggers.forEach((button) => {
+          button.addEventListener("click", () => {
+          const panelName = button.dataset.infoPanel || "credits";
+          openModal(panelName);
+          });
+          });
+        document.querySelectorAll("[data-info-close]").forEach((button) => {
+          button.addEventListener("click", closeModal);
+          });
+      })();
       </script>
    </body>
 </html>

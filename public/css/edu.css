@@ -5,188 +5,458 @@
 	width: 100%;
 	min-height: 100vh;
 	padding: 0;
-	background: #f7f9fb;
+	margin: 0;
+	background: #eef1f5;
 	z-index: 9999;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-	color: #2c3e50;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	color: #1d2b3a;
 	overflow-y: auto;
+	line-height: 1.5;
 }
+
+#seo-content * {
+	box-sizing: border-box;
+}
+
+#seo-content a {
+	color: #1a5276;
+	text-decoration: none;
+}
+
+#seo-content a:hover {
+	text-decoration: underline;
+}
+
 #seo-content .school-nav {
-	background: #ffffff;
-	padding: 16px 40px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+	background: #1b3a5c;
+	padding: 0 28px;
+	height: 52px;
 	display: flex;
 	align-items: center;
-	border-bottom: 1px solid #e8ecef;
+	justify-content: space-between;
 }
+
+#seo-content .nav-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
 #seo-content .school-nav .logo {
-	font-size: 28px;
+	font-size: 18px;
 	font-weight: 700;
-	color: #5c6ac4;
+	color: #fff;
 	margin: 0;
+	letter-spacing: 0.2px;
 }
+
+#seo-content .nav-divider {
+	width: 1px;
+	height: 20px;
+	background: rgba(255,255,255,0.3);
+}
+
+#seo-content .nav-label {
+	font-size: 11px;
+	color: rgba(255,255,255,0.7);
+	text-transform: uppercase;
+	letter-spacing: 0.8px;
+}
+
+#seo-content .nav-links {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#seo-content .nav-links li a {
+	color: rgba(255,255,255,0.85);
+	font-size: 13px;
+	padding: 16px 14px;
+	display: block;
+	transition: background 0.15s;
+}
+
+#seo-content .nav-links li a:hover {
+	background: rgba(255,255,255,0.1);
+	text-decoration: none;
+}
+
+#seo-content .nav-signin {
+	background: rgba(255,255,255,0.15) !important;
+	border-radius: 4px;
+	padding: 7px 16px !important;
+	margin-left: 6px;
+}
+
 #seo-content .hero-section {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-	padding: 60px 40px;
+	background: #234b73;
+	padding: 44px 28px 40px;
 	text-align: center;
-	color: white;
+	color: #fff;
+	border-bottom: 3px solid #d4a843;
 }
+
 #seo-content h1 {
-	font-size: 3em;
-	font-weight: 700;
-	margin: 0 0 16px 0;
-	letter-spacing: -0.5px;
-	line-height: 1.2;
-}
-#seo-content .hero-section .tagline {
-	font-size: 1.4em;
-	font-weight: 400;
-	margin: 0 0 24px 0;
-	opacity: 0.95;
-}
-#seo-content .hero-section .cta-button {
-	background: white;
-	color: #5c6ac4;
-	padding: 14px 32px;
-	border-radius: 8px;
+	font-size: 1.9em;
 	font-weight: 600;
-	font-size: 1.1em;
+	margin: 0 0 8px;
+	letter-spacing: -0.2px;
+}
+
+#seo-content .tagline {
+	font-size: 1.05em;
+	font-weight: 400;
+	margin: 0 0 20px;
+	color: rgba(255,255,255,0.85);
+}
+
+#seo-content .hero-actions {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+}
+
+#seo-content .cta-button {
+	padding: 10px 24px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
 	display: inline-block;
-	margin-top: 10px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+#seo-content .cta-primary {
+	background: #d4a843;
+	color: #1b3a5c;
+}
+
+#seo-content .cta-secondary {
+	background: transparent;
+	color: #fff;
+	border: 1px solid rgba(255,255,255,0.5);
+}
+
+#seo-content .announce-bar {
+	background: #fef9e7;
+	border-bottom: 1px solid #f0dca0;
+	padding: 10px 28px;
+	font-size: 13px;
+	color: #5a4e1e;
+}
+
 #seo-content .main-content {
-	max-width: 1200px;
+	max-width: 1080px;
 	margin: 0 auto;
-	padding: 60px 40px;
+	padding: 28px 28px 0;
 }
-#seo-content .intro-text {
-	font-size: 1.3em;
-	line-height: 1.7;
-	margin-bottom: 50px;
-	text-align: center;
-	color: #4a5568;
+
+#seo-content .quick-row {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 28px;
 }
-#seo-content .features-grid {
+
+#seo-content .qlink {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: #fff;
+	border: 1px solid #d5dbe3;
+	border-radius: 6px;
+	padding: 14px 16px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #1b3a5c;
+	transition: border-color 0.15s;
+}
+
+#seo-content .qlink:hover {
+	border-color: #1b3a5c;
+	text-decoration: none;
+}
+
+#seo-content .qlink svg {
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+	color: #1b3a5c;
+}
+
+#seo-content .two-col {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	grid-template-columns: 1fr 300px;
 	gap: 24px;
-	margin-bottom: 50px;
+	margin-bottom: 28px;
 }
-#seo-content section {
-	background: white;
-	border-radius: 12px;
-	padding: 32px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-	border: 1px solid #e8ecef;
-	transition: all 0.3s ease;
+
+#seo-content .col-main h2 {
+	font-size: 16px;
+	font-weight: 600;
+	margin: 0 0 12px;
+	color: #1d2b3a;
 }
-#seo-content section:hover {
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-	transform: translateY(-4px);
+
+#seo-content .dept-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #fff;
+	border: 1px solid #d5dbe3;
+	border-radius: 6px;
+	overflow: hidden;
+	font-size: 13px;
 }
-#seo-content section:nth-child(1) {
-	border-top: 4px solid #5c6ac4;
+
+#seo-content .dept-table thead {
+	background: #f5f7fa;
 }
-#seo-content section:nth-child(2) {
-	border-top: 4px solid #48bb78;
+
+#seo-content .dept-table th {
+	text-align: left;
+	padding: 10px 14px;
+	font-weight: 600;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	color: #4a5568;
+	border-bottom: 1px solid #d5dbe3;
 }
-#seo-content section:nth-child(3) {
-	border-top: 4px solid #ed8936;
+
+#seo-content .dept-table td {
+	padding: 10px 14px;
+	border-bottom: 1px solid #edf0f4;
+	color: #374151;
 }
-#seo-content section:nth-child(4) {
-	border-top: 4px solid #f56565;
+
+#seo-content .dept-table tr:last-child td {
+	border-bottom: none;
 }
-#seo-content section:nth-child(5) {
-	border-top: 4px solid #9f7aea;
+
+#seo-content .dept-table td:first-child {
+	font-weight: 600;
+	color: #1b3a5c;
+	white-space: nowrap;
 }
-#seo-content h2 {
-	font-size: 1.5em;
-	font-weight: 700;
-	margin: 0 0 16px 0;
-	color: #2d3748;
+
+#seo-content .col-side {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
-#seo-content h3 {
-	font-size: 1.4em;
-	font-weight: 700;
-	margin: 0 0 16px 0;
-	color: #2d3748;
+
+#seo-content .side-card {
+	background: #fff;
+	border: 1px solid #d5dbe3;
+	border-radius: 6px;
+	padding: 16px;
 }
-#seo-content section p {
-	line-height: 1.7;
-	font-size: 1em;
+
+#seo-content .side-card h3 {
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0 0 10px;
+	color: #1d2b3a;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #edf0f4;
+}
+
+#seo-content .side-card p {
+	font-size: 13px;
 	color: #4a5568;
 	margin: 0;
+	line-height: 1.6;
 }
-#seo-content .trust-section {
-	background: #5c6ac4;
-	padding: 40px;
-	text-align: center;
-	color: white;
-	margin-top: 50px;
-	border-radius: 12px;
-}
-#seo-content .trust-section h3 {
-	color: white;
-	font-size: 1.8em;
-	margin-bottom: 16px;
-}
-#seo-content .trust-section p {
-	color: rgba(255, 255, 255, 0.9);
-	font-size: 1.1em;
-}
-#seo-content .school-footer {
-	background: #2d3748;
-	padding: 32px 40px;
-	text-align: center;
-	color: white;
-	margin-top: 60px;
-}
-#seo-content .school-footer p {
+
+#seo-content .date-list,
+#seo-content .res-list {
+	list-style: none;
 	margin: 0;
-	color: rgba(255, 255, 255, 0.8);
-	font-size: 0.95em;
+	padding: 0;
 }
+
+#seo-content .date-list li {
+	font-size: 13px;
+	padding: 5px 0;
+	border-bottom: 1px solid #f3f4f6;
+	color: #374151;
+}
+
+#seo-content .date-list li:last-child {
+	border-bottom: none;
+}
+
+#seo-content .date-list strong {
+	display: inline-block;
+	width: 72px;
+	color: #1b3a5c;
+	font-size: 12px;
+}
+
+#seo-content .res-list li {
+	padding: 4px 0;
+}
+
+#seo-content .res-list li a {
+	font-size: 13px;
+	color: #1a5276;
+}
+
+#seo-content .notice-box {
+	background: #f5f7fa;
+	border: 1px solid #d5dbe3;
+	border-radius: 6px;
+	padding: 14px 18px;
+	margin-bottom: 0;
+}
+
+#seo-content .notice-box p {
+	margin: 0;
+	font-size: 12px;
+	color: #6b7280;
+	text-align: center;
+}
+
+#seo-content .school-footer {
+	background: #1b3a5c;
+	margin-top: 32px;
+	padding: 20px 28px;
+	color: rgba(255,255,255,0.7);
+	font-size: 12px;
+}
+
+#seo-content .footer-inner {
+	max-width: 1080px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+#seo-content .footer-left {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+#seo-content .footer-left strong {
+	color: #fff;
+	font-size: 13px;
+}
+
+#seo-content .footer-left span {
+	font-size: 11px;
+}
+
+#seo-content .footer-links {
+	display: flex;
+	gap: 18px;
+}
+
+#seo-content .footer-links a {
+	color: rgba(255,255,255,0.65);
+	font-size: 12px;
+}
+
+#seo-content .footer-links a:hover {
+	color: #fff;
+}
+
+#seo-content .footer-right {
+	color: rgba(255,255,255,0.5);
+	font-size: 11px;
+}
+
 @media (max-width: 768px) {
 	#seo-content .school-nav {
-		padding: 12px 20px;
+		padding: 0 16px;
+		height: auto;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 12px 16px;
+		gap: 8px;
 	}
-	#seo-content .school-nav .logo {
-		font-size: 22px;
+
+	#seo-content .nav-label {
+		display: none;
 	}
+
+	#seo-content .nav-divider {
+		display: none;
+	}
+
+	#seo-content .nav-links {
+		flex-wrap: wrap;
+		gap: 0;
+	}
+
+	#seo-content .nav-links li a {
+		padding: 8px 10px;
+		font-size: 12px;
+	}
+
 	#seo-content .hero-section {
-		padding: 40px 20px;
+		padding: 28px 16px 24px;
 	}
+
 	#seo-content h1 {
-		font-size: 2em;
+		font-size: 1.4em;
 	}
-	#seo-content .hero-section .tagline {
-		font-size: 1.1em;
+
+	#seo-content .tagline {
+		font-size: 0.95em;
 	}
-	#seo-content .hero-section .cta-button {
-		padding: 12px 24px;
-		font-size: 1em;
+
+	#seo-content .hero-actions {
+		flex-direction: column;
+		align-items: center;
 	}
+
+	#seo-content .announce-bar {
+		padding: 10px 16px;
+	}
+
 	#seo-content .main-content {
-		padding: 40px 20px;
+		padding: 16px;
 	}
-	#seo-content .intro-text {
-		font-size: 1.1em;
+
+	#seo-content .quick-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
 	}
-	#seo-content .features-grid {
+
+	#seo-content .qlink {
+		padding: 12px;
+		font-size: 13px;
+	}
+
+	#seo-content .two-col {
 		grid-template-columns: 1fr;
 	}
-	#seo-content section {
-		padding: 24px;
+
+	#seo-content .dept-table td:first-child {
+		white-space: normal;
 	}
-	#seo-content h2,
-	#seo-content h3 {
-		font-size: 1.3em;
+
+	#seo-content .footer-inner {
+		flex-direction: column;
+		gap: 12px;
+		text-align: center;
 	}
-	#seo-content .trust-section {
-		padding: 30px 20px;
+
+	#seo-content[style*="display: none"] {
+		position: absolute !important;
+		width: 0 !important;
+		height: 0 !important;
+		overflow: hidden !important;
 	}
-	#seo-content .school-footer {
-		padding: 24px 20px;
+
+	#seo-content .footer-links {
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 }

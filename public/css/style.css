@@ -5,6 +5,11 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	cursor: url('comic.cur'), auto;
+}
+
+html {
+    scroll-behavior: liquid-smooth;
 }
 
 body {
@@ -55,7 +60,7 @@ input[type="submit"],
 input[type="reset"],
 label[for],
 .clickable {
-	cursor: url('comic.cur'), pointer;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 input[type="text"],
@@ -65,7 +70,7 @@ input[type="search"],
 input[type="url"],
 input[type="tel"],
 textarea {
-	cursor: url('comic.cur'), text;
+	cursor: url('comictext.cur'), text;
 }
 
 a:hover,
@@ -73,19 +78,19 @@ button:hover,
 select:hover,
 input:hover,
 i:hover {
-	cursor: url('comic.cur'), pointer;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 .navbar-right a,
 .navbar-right a img {
-	cursor: url('comic.cur'), pointer !important;
+	cursor: url('comiclink.cur'), pointer !important;
 }
 
 .game,
 .game-link,
 .game-thumbnail,
 .game-gallery {
-	cursor: url('comic.cur'), pointer !important;
+	cursor: url('comiclink.cur'), pointer !important;
 }
 
 .navbar-right a:hover,
@@ -93,11 +98,11 @@ i:hover {
 .game:hover,
 .game-link:hover,
 .game-thumbnail:hover {
-	cursor: url('comic.cur'), pointer !important;
+	cursor: url('comiclink.cur'), pointer !important;
 }
 
 select:active {
-	cursor: url('comic.cur'), pointer;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 #loading-screen {
@@ -149,6 +154,7 @@ select:active {
 	justify-content: center;
 	height: calc(100vh - 70px - 20px - 10px);
 	text-align: center;
+	cursor: url('comic.cur'), auto;
 	gap: 20px;
 }
 
@@ -224,7 +230,7 @@ select:active {
 	transition: background-color 0.3s ease, transform 0.3s ease;
 	padding: 15px 25px;
 	width: 200px;
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 .navbar {
@@ -299,12 +305,12 @@ select:active {
 	height: 32px;
 	filter: invert(1);
 	transition: transform 0.3s ease, filter 0.3s ease;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 .navbar-right img:hover {
 	transform: scale(1.15);
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 	filter: invert(0.7);
 }
 
@@ -326,13 +332,7 @@ select:active {
 
 .navbar-right a:hover .label {
 	opacity: 1;
-	cursor: url('comic.cur'), auto;
-}
-
-.content {
-	margin-top: 100px;
-	padding: 20px;
-	text-align: center;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 h1 {
@@ -393,7 +393,7 @@ h6 {
 .search-bar:hover {
 	background-color: #162424;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
-	cursor: url('comic.cur'), auto;
+	cursor: url('comictext.cur'), text;
 }
 
 .search-bar::placeholder {
@@ -413,25 +413,37 @@ h6 {
 	z-index: 1000;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	overflow-y: auto;
+	overflow-x: hidden;
 	max-height: 250px;
 	scrollbar-width: thin;
-	scrollbar-color: #1e4141 #121e1e;
+	scrollbar-color: #365e5e transparent;
+	scrollbar-gutter: stable;
 }
 
 .autocomplete-list::-webkit-scrollbar {
-	width: 8px;
+	width: 10px;
+}
+
+.autocomplete-list::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 8px 2px;
 }
 
 .autocomplete-list::-webkit-scrollbar-thumb {
-	background: #1e4141;
-	border-radius: 4px;
+	background: linear-gradient(180deg, #4d7d7d 0%, #2f5555 100%);
+	border: 2px solid #1b2d2d;
+	border-radius: 999px;
+}
+
+.autocomplete-list::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(180deg, #5b9191 0%, #3c6969 100%);
 }
 
 .autocomplete-item {
 	display: flex;
 	align-items: center;
 	padding: 8px 12px;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 	transition: background 0.2s ease;
 }
 
@@ -459,11 +471,10 @@ button {
 	border: 2px solid #203b3b;
 	padding: 10px 20px;
 	font-size: 1rem;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 	border-radius: 5px;
 	margin: 5px;
 	transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-	cursor: url('comic.cur'), auto;
 }
 
 button:hover {
@@ -471,7 +482,7 @@ button:hover {
 	border-color: #203b3b;
 	color: #ffffff;
 	transform: scale(1.05);
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 .container {
@@ -508,7 +519,7 @@ header p {
  .game:hover {
      transform: scale(1.05);
      border-color: #ffffff00;
-     cursor: url('comic.cur'), auto;
+     cursor: url('comiclink.cur'), pointer;
 }
 .game-link {
      position: relative;
@@ -518,7 +529,7 @@ header p {
      overflow: hidden;
      border-radius: 10px;
      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
-     cursor: pointer;
+     cursor: url('comiclink.cur'), pointer;
 }
 .game-thumbnail {
      border-radius: 10px;
@@ -533,7 +544,7 @@ header p {
     transform: scale(1.05); 
 }
 .game:hover .game-link {
-    cursor: url('comic.cur'), auto; 
+    cursor: url('comiclink.cur'), pointer; 
 }
 .game-link::after {
      content: ''; 
@@ -594,8 +605,146 @@ body {
 	padding: 20px;
 	text-align: center;
 	width: 100%;
+	height: 100%;
 	min-height: auto;
+	cursor: url('comic.cur'), auto;
 	height: auto;
+}
+
+body.modal-open {
+	overflow: hidden;
+}
+
+.legal-links {
+	position: fixed;
+	left: 50%;
+	bottom: 2px;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0;
+	font-size: 0.78rem;
+	line-height: 1;
+	color: rgba(214, 226, 226, 0.4);
+	z-index: 1001;
+}
+.legal-trigger {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: transparent;
+	color: rgba(214, 226, 226, 0.42);
+	font-size: inherit;
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: lowercase;
+	box-shadow: none;
+}
+.legal-trigger:hover {
+	background: transparent;
+	color: rgba(241, 246, 246, 0.78);
+	transform: none;
+}
+
+.legal-links__divider::before {
+	content: "/";
+	display: inline-block;
+	margin: 0 2px;
+	color: rgba(214, 226, 226, 0.18);
+}
+
+.info-modal {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease, visibility 0.25s ease;
+	z-index: 10020;
+}
+
+.info-modal.is-open {
+	visibility: visible;
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.info-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(9, 16, 16, 0.68);
+}
+
+.info-dialog {
+	position: relative;
+	width: min(460px, calc(100vw - 28px));
+	max-height: min(72vh, 760px);
+	padding: 18px;
+	overflow: auto;
+	border-radius: 10px;
+	background: #111919;
+	border: 1px solid rgba(154, 185, 185, 0.06);
+	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+	text-align: left;
+}
+
+.info-dialog__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+.info-dialog__header h2 {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: 500;
+	color: #f2f6f6;
+	letter-spacing: 0;
+	text-transform: lowercase;
+}
+
+.info-dialog__close {
+	padding: 0;
+	margin: 0;
+	background: transparent;
+	border: 0;
+	font-size: 0.95rem;
+	line-height: 1;
+	color: rgba(214, 226, 226, 0.46);
+}
+
+.info-dialog__close:hover {
+	background: transparent;
+	color: rgba(242, 246, 246, 0.8);
+	transform: none;
+}
+
+.info-dialog__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.info-panel {
+	display: none;
+}
+
+.info-panel.is-active {
+	display: block;
+}
+
+.info-panel p {
+	margin: 0 0 10px;
+	font-size: 0.9rem;
+	line-height: 1.55;
+	color: #c3cece;
 }
 
 .container {
@@ -620,6 +769,29 @@ body {
 	.game-link::before {
 		font-size: 1.1rem;
 	}
+
+	.legal-links {
+		padding: 0 10px;
+		bottom: 6px;
+		font-size: 0.74rem;
+	}
+
+	.info-modal {
+		padding: 16px;
+	}
+
+	.info-dialog {
+		padding: 16px;
+		border-radius: 10px;
+	}
+
+	.info-dialog__header {
+		align-items: center;
+	}
+
+	.info-dialog__close {
+		width: auto;
+	}
 }
 
 @media (max-width: 480px) {
@@ -633,7 +805,7 @@ body {
 button {
 	font-size: 14px;
 	padding: 8px 15px;
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 .buttons-here {
@@ -708,7 +880,7 @@ button {
 #aboutblank {
 	font-size: 18px;
 	color: white;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 	transition: all ease-in-out 0.2s;
 	background-color: #223d3d;
 	padding: 10px;
@@ -728,7 +900,7 @@ button {
 #downloadgame:hover,
 #discordchat:hover {
 	background-color: #121e1e;
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 #copylink:hover {
@@ -738,16 +910,6 @@ button {
 #copylink.copied {
 	color: #ffffff !important;
 	background-color: rgba(76, 175, 80, 0.2) !important;
-}
-
-#discordchat.active {
-	background-color: #5865F2 !important;
-	color: white !important;
-}
-
-.content {
-	width: 100%;
-	height: 100%;
 }
 
 .settings-container {
@@ -785,14 +947,13 @@ input[type="file"]::-webkit-file-upload-button {
 	border: none;
 	padding: 8px 12px;
 	border-radius: 5px;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 	transition: background-color 0.3s ease;
-	cursor: url('comic.cur'), auto;
 }
 
 input[type="file"]::-webkit-file-upload-button:hover {
 	background-color: #121e1e;
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 label {
@@ -843,7 +1004,7 @@ label {
 	border: 2px solid #223d3d;
 	padding: 12px 24px;
 	border-radius: 6px;
-	cursor: pointer;
+	cursor: url('comiclink.cur'), pointer;
 	transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -944,7 +1105,7 @@ label {
 
 #credits a:hover {
 	text-decoration: underline;
-	cursor: url('comic.cur'), auto;
+	cursor: url('comiclink.cur'), pointer;
 }
 
 @media (max-width: 768px) {
@@ -1017,10 +1178,10 @@ label {
 #uv-address:hover,
 #uv-address:focus {
 	background-color: #132828;
-	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), 0 0 10px var(--glow-color);
+	box-shadow: white;
 	border-color: var(--glow-color);
 	transform: scale(1.02);
-	cursor: url('comic.cur'), text;
+	cursor: url('comictext.cur'), text;
 }
 
 #uv-error {
@@ -1127,7 +1288,7 @@ body {
   color: #ccc;
   padding: 5px 10px;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: all 0.3s ease;
 }
 #historyActions button:hover {
@@ -1173,7 +1334,7 @@ body {
   border: none;
   color: #aaa;
   font-size: 1.2em;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: color 0.2s ease;
 }
 .history-item-delete:hover {
@@ -1230,7 +1391,7 @@ body {
   padding: 6px 14px;
   color: white;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: all 0.2s ease;
 }
 .passwordButtons button:hover {
@@ -1239,6 +1400,7 @@ body {
 #footer {
   position: fixed;
   bottom: 0;
+  cursor: url('comiclink.cur'), pointer;
   left: 0;
   width: 100%;
   background: rgba(27, 45, 45, 0.85);
@@ -1252,7 +1414,7 @@ body {
 }
 #footer .logo {
   height: 32px;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: transform 0.3s ease;
 }
 #footer .logo:hover {
@@ -1263,6 +1425,7 @@ body {
   border: 1px solid #1f3434;
   color: white;
   padding: 8px 15px;
+  cursor: url('comiclink.cur'), pointer;
   border-radius: 20px;
   width: 50%;
   outline: none;
@@ -1270,11 +1433,12 @@ body {
 }
 #footer input:focus {
   border-color: #1f3434;
+  cursor: url('comiclink.cur'), pointer;
 }
 #footer .headericons {
   height: 28px;
   margin: 0 5px;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: transform 0.2s ease;
   filter: grayscale(100%);
 }
@@ -1346,7 +1510,7 @@ body {
   background: #1b2d2d;
   border-radius: 50px;
   position: relative;
-  cursor: pointer;
+  cursor: url('comiclink.cur'), pointer;
   transition: all 0.3s ease;
   border: 2px solid #203b3b;
 }
@@ -1370,4 +1534,73 @@ body {
 #mobilesettings input[type="checkbox"]:checked::before {
   transform: translateX(24px);
   background: #9fb3b3;
+}
+#panicUrlInput {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #1c383b;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  display: block;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  width: 80%;
+}
+#panickeysettings button:last-of-type {
+  margin-left: 0;
+  display: block;
+}
+#cloakSelect {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #1c383b;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  display: block;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  width: 80%;
+  cursor: pointer;
+}
+#cloakSelect option {
+  background: #0e1a1b;
+  color: #fff;
+}
+#proxySelect {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #1c383b;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  display: block;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  width: 80%;
+  cursor: pointer;
+}
+#proxySelect option {
+  background: #0e1a1b;
+  color: #fff;
+}
+.game.game-match .game-link {
+   outline: 3px solid rgba(255, 255, 255, 0.78);
+   outline-offset: 4px;
+   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.24), 0 0 28px rgba(255, 255, 255, 0.2);
+}
+.game.game-match-primary .game-link {
+   outline: 4px solid #ffffff;
+   outline-offset: 4px;
+   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.32), 0 0 34px rgba(255, 255, 255, 0.32);
 }

@@ -59,7 +59,6 @@ body::before {
   color: white;
 }
 
-/* Loading Bar */
 #loadingbar {
   position: fixed;
   top: 0;
@@ -72,7 +71,6 @@ body::before {
   z-index: 99999;
 }
 
-/* History Modal */
 #historyModal {
   position: fixed;
   inset: 0;
@@ -180,8 +178,6 @@ body::before {
 .history-item-delete:hover {
   color: #fc6363;
 }
-
-/* Password Modal */
 #historyPasswordModal {
   position: fixed;
   inset: 0;
@@ -255,7 +251,6 @@ body::before {
   background: #1f3434;
 }
 
-/* Search Overlay */
 #gooei {
   position: fixed;
   inset: 0;
@@ -304,8 +299,6 @@ body::before {
 #teacher-setup-dialogs-container-searchbar::placeholder {
   color: #888;
 }
-
-/* Footer */
 #footer {
   position: fixed;
   bottom: 0;
@@ -365,8 +358,6 @@ body::before {
   transform: scale(1.1);
   filter: invert(1) grayscale(0%);
 }
-
-/* Iframe */
 #iframeid {
   position: fixed;
   top: 0;
@@ -376,8 +367,6 @@ body::before {
   border: none;
   z-index: 1;
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   #footer input {
     width: 40%;

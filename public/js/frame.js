@@ -17,6 +17,16 @@ const PROTOCOL_HANDLERS = {
 const REVERSE_PROTOCOL_HANDLERS = Object.fromEntries(
   Object.entries(PROTOCOL_HANDLERS).map(([key, value]) => [value, key])
 );
+const PENDING_PROXY_URL_KEY = "pendingProxyUrl";
+
+function getPendingProxyUrl() {
+  return sessionStorage.getItem(PENDING_PROXY_URL_KEY) || "";
+}
+
+function getStoredEncodedUrl() {
+  const encodedUrl = sessionStorage.getItem("encodedUrl") || "";
+  return encodedUrl ? decodeURL(encodedUrl) : "";
+}
 async function loadNewPage(url) {
   const searchBar = document.getElementById("teacher-setup-dialogs-container-searchbar");
   if (searchBar) searchBar.blur();
@@ -36,8 +46,8 @@ async function loadNewPage(url) {
     url = SITE_REDIRECTS[url];
   }
   const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-  if (await connection.getTransport() !== "/libcurl/index.mjs") {
-    await connection.setTransport("/libcurl/index.mjs", [{ wisp: wispUrl }]);
+  if (await connection.getTransport() !== "/scram/libcurl/index.mjs") {
+    await connection.setTransport("/scram/libcurl/index.mjs", [{ websocket: wispUrl }]);
   }
   const urlEncoded = "/active/go/" + __uv$config.encodeUrl(url);
   const iframe = document.getElementById("iframeid");
@@ -51,12 +61,14 @@ async function loadNewPage(url) {
   }
 }
 window.addEventListener("load", function () {
-  const encodedUrl = decodeURL(sessionStorage.getItem("encodedUrl") || "");
-  if (!encodedUrl) {
-    console.warn('No encoded URL found in session storage');
+  const encodedUrl = getStoredEncodedUrl();
+  const pendingProxyUrl = getPendingProxyUrl();
+  if (!encodedUrl && !pendingProxyUrl) {
     return;
   }
-  loadNewPage(encodedUrl)
+  if (encodedUrl) {
+    loadNewPage(encodedUrl);
+  }
 });
 window.addEventListener("DOMContentLoaded", function () {
   const searchBar = document.getElementById("teacher-setup-dialogs-container-searchbar");
@@ -65,8 +77,10 @@ window.addEventListener("DOMContentLoaded", function () {
     console.error('Search bar not found');
     return;
   }
-  const decodedUrl = decodeURL(sessionStorage.getItem("encodedUrl") || "");
-  searchBar.value = REVERSE_PROTOCOL_HANDLERS[decodedUrl] || decodedUrl;
+  const decodedUrl = getStoredEncodedUrl();
+  const pendingProxyUrl = getPendingProxyUrl();
+  const initialUrl = pendingProxyUrl || decodedUrl;
+  searchBar.value = REVERSE_PROTOCOL_HANDLERS[initialUrl] || initialUrl;
   searchBar.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       event.preventDefault();

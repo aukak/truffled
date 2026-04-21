@@ -19,17 +19,8 @@
       <meta name="twitter:image" content="https://truffled.lol/png/logo.png">
       <link rel="canonical" href="https://truffled.lol/">
       <link rel="stylesheet" href="css/style.css">
-      <link rel="stylesheet" href="css/h.css">
-      <link rel="stylesheet" href="css/auto.css">
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
    </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PXHK7Q7G3Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PXHK7Q7G3Z');
-</script>
    <body>
       <div class="navbar-right">
           <a href="/"><img src="png/house-solid.svg" alt="h"></a>
@@ -42,7 +33,7 @@
       <div class="content">
          <h4>Games</h4>
          <div id="searchCount" style="color: #ffffff; text-align: center; font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.5px;">Loading games...</div>
-         <input type="text" id="searchInput" class="search-bar" placeholder="Search games...">
+         <input type="text" id="searchInput" class="search-bar" placeholder="Search games..." autocomplete="off">
          <div id="autocomplete" class="autocomplete-list"></div>
          <div class="container">
             <div class="game-gallery" id="gameGallery"></div>
@@ -51,269 +42,275 @@
       <script src="js/cloak.js"></script>
       <script src="/js/panic.js"></script>
       <script src="/js/search.js"></script>
-      <script src="/js/right.js"></script>
       <script src="/js/mobile.js"></script>
       <script>
-         class GameLoader {
-         constructor() {
-             this.games = [];
-             this.totalGames = 0;
-             this.popularGames = [
-                 "Roblox",
-                 "Fortnite",
-                 "Hollow Knight, Webport",
-                 "Retro Bowl",
-                 "Balatro, Webport"
-             ];
-         }
-         async init() {
-             try {
-                 await this.directSetIp();
-                 await this.loadGames();
-                 this.renderGames();
-                 this.setupSearch();
-                 this.updateGameCount();
-             } catch (err) {
-                 console.error('game load error', err);
-                 this.showError('refresh to fix');
-             }
-         }
-         async directSetIp() {
-             try {
-                 const res = await fetch('/ip');
-                 if (!res.ok) throw new Error('fetch failed');
-                 const ip = await res.text();
-                 sessionStorage.setItem("prefix", ip);
-             } catch (err) {
-                 console.error('IP fetch error:', err);
-             }
-         }
-         async loadGames() {
-             try {
-                 const response = await fetch('/js/json/g.json');
-                 if (!response.ok) throw new Error('g.json not found');
-                 const data = await response.json();
-                 this.games = data.games || [];
-                 this.totalGames = this.games.length;
-             } catch (err) {
-                 console.error('error loading:', err);
-                 throw err;
-             }
-         }
-         
-         getGameUrl(game) {
-             let url = game.url;
-             if (game.requiresPrefix) {
-                 const prefix = sessionStorage.getItem("prefix") || '';
-                 url = url.replace('{prefix}', prefix);
-             }
-             if (typeof transformGameUrl === 'function') {
-                 url = transformGameUrl(url);
-             }
-             
-             return url;
-         }
-         getFramePage(url) {
-             if (url.includes('/mobile.html?url=')) {
-                 return '/iframe.html';
-             }            
-             const game = this.games.find(g => url.includes(g.url.split('?')[0]));
-             const frameType = game?.frameType || 'iframe';
-             return frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-         }
-         
-         renderGames() {
-             const gallery = document.getElementById('gameGallery');
-             if (!gallery) return;
-             gallery.innerHTML = '';
-             gallery.appendChild(this.createGameSuggestionCard());
-             gallery.appendChild(this.createRandomGameCard());
-             this.games.forEach((game, index) => {
-                 const gameCard = this.createGameCard(game, index);
-                 gallery.appendChild(gameCard);
-             });
-         }
-         createGameSuggestionCard() {
-             const div = document.createElement('div');
-             div.className = 'game';
-             div.setAttribute('data-name', 'Game Suggestions');
-             div.innerHTML = `
-                 <a href="https://forms.gle/azBWo53JQN8VNzFt5" class="game-link" data-name="Game Suggestions">
-                 <img src="/png/games/forms.webp" alt="Game Suggestions" class="game-thumbnail" loading="eager">
-                 </a>
-             `;
-             return div;
-         }
-         createRandomGameCard() {
-             const div = document.createElement('div');
-             div.className = 'game';
-             div.setAttribute('data-name', 'Random game');
-             div.onclick = () => this.pickRandomGame();
-             div.innerHTML = `
-                 <a href="javascript:void(0);" class="game-link" data-name="Random game">
-                 <video src="png/vid/random.gif" autoplay muted loop playsinline class="game-thumbnail"></video>
-                 </a>
-             `;
-             return div;
-         }
-         createGameCard(game, index) {
-             const div = document.createElement('div');
-             div.className = 'game';
-             div.setAttribute('data-name', game.name);
-             if (game.altNames && game.altNames.length > 0) {
-                 div.setAttribute('data-names', [game.name, ...game.altNames].join(','));
-             }
-             const url = this.getGameUrl(game);
-             const frameType = game.frameType || 'iframe';
-             const framePage = frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-             
-             // Eager load first 12 games, lazy load the rest
-             const loadingAttr = index < 12 ? 'eager' : 'lazy';
-             
-             const mediaTag = game.mediaType === 'video' 
-                 ? `<video src="${game.thumbnail}" autoplay muted loop playsinline class="game-thumbnail" loading="${loadingAttr}"></video>`
-                 : `<img src="${game.thumbnail}" alt="${game.name}" class="game-thumbnail" loading="${loadingAttr}">`;
-             div.innerHTML = `
-                 <a href="${framePage}?url=${encodeURIComponent(url)}" class="game-link" data-name="${game.name}">
-                 ${mediaTag}
-                 </a>
-             `;
-             return div;
-         }
-         setupSearch() {
-             const searchInput = document.getElementById('searchInput');
-             const autocomplete = document.getElementById('autocomplete');
-             if (!searchInput || !autocomplete) return;
-             searchInput.addEventListener('input', (e) => {
-                 const filter = e.target.value.toLowerCase().trim();
-                 if (!filter) {
-                     this.updateGameCount();
-                     autocomplete.style.display = 'none';
-                     this.showAllGames();
-                     return;
-                 }
-                 const matches = this.findMatches(filter);
-                 this.showSuggestions(matches, autocomplete);
-                 this.updateGameCount(this.totalGames); 
-             });
-             searchInput.addEventListener('focus', () => {
-                 if (!searchInput.value.trim()) {
-                     const popularMatches = this.getPopularGames();
-                     this.showSuggestions(popularMatches, autocomplete);
-                 }
-             });
-             document.addEventListener('click', (e) => {
-                 if (!autocomplete.contains(e.target) && e.target !== searchInput) {
-                     autocomplete.style.display = 'none';
-                 }
-             });
-         }
-         findMatches(filter) {
-             return this.games.filter(game => {
-                 const names = [game.name, ...(game.altNames || [])];
-                 return names.some(name => name.toLowerCase().includes(filter));
-             });
-         }
-         getPopularGames() {
-             return this.games.filter(game => 
-                 this.popularGames.includes(game.name)
-             );
-         }
-         showSuggestions(matches, autocomplete) {
-             autocomplete.innerHTML = '';
-             if (matches.length > 0) {
-                 matches.forEach(match => {
-                 const item = document.createElement('div');
-                 item.className = 'autocomplete-item';                
-                 const url = this.getGameUrl(match);
-                 const frameType = match.frameType || 'iframe';
-                 const framePage = frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-                 
-                 item.innerHTML = `
-                     <img src="${match.thumbnail}" alt="${match.name}" loading="lazy">
-                     <span>${match.name}</span>
-                 `;
-                 item.onclick = () => window.location.href = `${framePage}?url=${encodeURIComponent(url)}`;
-                 autocomplete.appendChild(item);
-                 });
-                 autocomplete.style.display = 'block';
-             } else {
-                 autocomplete.style.display = 'none';
-             }
-         }        
-         showAllGames() {
-             const gameCards = document.querySelectorAll('.game-gallery .game');
-             gameCards.forEach(card => card.style.display = '');
-         }
-         updateGameCount(count = null) {
-             const searchCount = document.getElementById('searchCount');
-             if (!searchCount) return;
-             if (count === null) {
-                 searchCount.textContent = `Showing all ${this.totalGames} games`;
-             } else {
-                 searchCount.textContent = `Showing all ${this.totalGames} games`;
-             }
-         }
-         pickRandomGame() {
-             if (this.games.length === 0) return;
-             const randomGame = this.games[Math.floor(Math.random() * this.games.length)];       
-             const url = this.getGameUrl(randomGame);
-             const frameType = randomGame.frameType || 'iframe';
-             const framePage = frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-             
-             window.location.href = `${framePage}?url=${encodeURIComponent(url)}`;
-         }
-         showError(message) {
-             const gallery = document.getElementById('gameGallery');
-             if (gallery) {
-                 gallery.innerHTML = `
-                     <div style="color: white; text-align: center; padding: 2rem; width: 100%;">
-                         <p>${message}</p>
-                     </div>
-                 `;
-             }
-         }
-         }
-         document.addEventListener('DOMContentLoaded', () => {
-         const loader = new GameLoader();
-         loader.init();
-         window.pickRandomGame = () => loader.pickRandomGame();
-         });
-      </script>
-      <script>
-         const secret = ["m", "r", "p", "i", "g", "g", "y"];
-         let progress = 0;
-         document.addEventListener("keydown", (event) => {
-             const key = event.key.toLowerCase();
-             const expected = secret[progress];
-             if (key === expected) {
-                 progress++;
-                 if (progress === secret.length) {
-                     window.open("/iframe.html?url=/games/szvyclicker/index.html", "_blank");
-                     progress = 0; 
-                 }
-             } else {
-                 progress = 0; 
-             }
-         });
-      </script>
-      <script>
-         window.addEventListener('scroll', () => {
-             const scrollY = window.scrollY;
-             const offsetX = (scrollY * 0.1) % 50; 
-             const offsetY = (scrollY * 0.1) % 50;
-             document.body.style.setProperty('--scroll-offset-x', `${offsetX}px`);
-             document.body.style.setProperty('--scroll-offset-y', `${offsetY}px`);
-         });
-         document.addEventListener('DOMContentLoaded', () => {
-             const style = document.createElement('style');
-             style.textContent = `
-                 body::before {
-                     background-position: var(--scroll-offset-x, 0px) var(--scroll-offset-y, 0px);
-                 }
-             `;
-             document.head.appendChild(style);
-         });
+            class GameLoader {
+            constructor() {
+                this.games = [];
+                this.totalGames = 0;
+                this.popularGames = [
+                    "Five Nights At Epsteins, Webport",
+                    "Cuphead, Webport",
+                    "Hollow Knight, Webport",
+                    "Silksong, Webport",
+                    "Balatro, Webport"
+                ];
+                this.directOpenUrls = [
+                    '/games/amaze/index.html'
+                ];
+            }
+            async init() {
+                try {
+                    await this.loadGames();
+                    this.renderGames();
+                    this.setupSearch();
+                    this.updateGameCount();
+                } catch (err) {
+                    console.error('game load error', err);
+                    this.showError('refresh to fix');
+                }
+            }
+            async loadGames() {
+                try {
+                    const response = await fetch('/js/json/g.json');
+                    if (!response.ok) throw new Error('g.json not found');
+                    const data = await response.json();
+                    this.games = data.games || [];
+                    this.totalGames = this.games.length;
+                } catch (err) {
+                    console.error('error loading:', err);
+                    throw err;
+                }
+            }
+            getGameUrl(game) {
+                let url = game.url;
+                if (game.requiresPrefix) {
+                    const prefix = sessionStorage.getItem("prefix") || '';
+                    url = url.replace('{prefix}', prefix);
+                }
+                if (typeof transformGameUrl === 'function') {
+                    url = transformGameUrl(url);
+                }
+                
+                return url;
+            }
+            getGameDestination(game) {
+                const url = this.getGameUrl(game);
+                const frameType = game.frameType || 'iframe';
+                const shouldOpenDirectly = this.shouldOpenDirectly(url);
+                return shouldOpenDirectly ? url :
+                    (frameType === 'unity' ? `/unityframe.html?url=${encodeURIComponent(url)}` :
+                    `/iframe.html?url=${encodeURIComponent(url)}`);
+            }
+            shouldOpenDirectly(url) {
+                return this.directOpenUrls.some(directUrl => url.includes(directUrl));
+            }
+            getFramePage(url) {
+                if (this.shouldOpenDirectly(url)) {
+                    return null; 
+                }
+                if (url.includes('/mobile.html?url=')) {
+                    return '/iframe.html';
+                }            
+                const game = this.games.find(g => url.includes(g.url.split('?')[0]));
+                const frameType = game?.frameType || 'iframe';
+                return frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
+            }
+            renderGames() {
+                const gallery = document.getElementById('gameGallery');
+                if (!gallery) return;
+                gallery.innerHTML = '';
+                gallery.appendChild(this.createGameSuggestionCard());
+                gallery.appendChild(this.createRandomGameCard());
+                this.games.forEach((game, index) => {
+                    const gameCard = this.createGameCard(game, index);
+                    gallery.appendChild(gameCard);
+                });
+            }
+            createGameSuggestionCard() {
+                const div = document.createElement('div');
+                div.className = 'game';
+                div.setAttribute('data-name', 'Game Suggestions');
+                div.appendChild(this.createCardLink({
+                    href: 'https://discord.com/channels/1400743472205398088/1412911144913604618',
+                    name: 'Game Suggestions',
+                    thumbnail: '/png/games/forms.webp',
+                    loading: 'eager'
+                }));
+                return div;
+            }
+            createRandomGameCard() {
+                const div = document.createElement('div');
+                div.className = 'game';
+                div.setAttribute('data-name', 'Random game');
+                div.onclick = () => this.pickRandomGame();
+                div.appendChild(this.createCardLink({
+                    href: 'javascript:void(0);',
+                    name: 'Random game',
+                    thumbnail: 'png/vid/random.gif',
+                    mediaType: 'video',
+                    loading: 'eager'
+                }));
+                return div;
+            }
+            createGameCard(game, index) {
+                const div = document.createElement('div');
+                div.className = 'game';
+                div.setAttribute('data-name', game.name);
+                div.dataset.searchNames = [game.name, ...(game.altNames || [])].join('\n').toLowerCase();
+                const loadingAttr = index < 12 ? 'eager' : 'lazy';
+                div.appendChild(this.createCardLink({
+                    href: this.getGameDestination(game),
+                    name: game.name,
+                    thumbnail: game.thumbnail,
+                    mediaType: game.mediaType,
+                    loading: loadingAttr
+                }));
+                return div;
+            }
+            createCardLink({ href, name, thumbnail, mediaType = 'image', loading = 'lazy' }) {
+                const link = document.createElement('a');
+                link.href = href;
+                link.className = 'game-link';
+                link.dataset.name = name;
+                let media;
+                if (mediaType === 'video') {
+                    media = document.createElement('video');
+                    media.src = thumbnail;
+                    media.autoplay = true;
+                    media.muted = true;
+                    media.loop = true;
+                    media.playsInline = true;
+                    media.preload = loading === 'eager' ? 'auto' : 'metadata';
+                } else {
+                    media = document.createElement('img');
+                    media.src = thumbnail;
+                    media.alt = name;
+                    media.loading = loading;
+                    media.decoding = 'async';
+                    media.addEventListener('error', () => {
+                        if (media.dataset.fallbackApplied === 'true') return;
+                        media.dataset.fallbackApplied = 'true';
+                        media.src = '/png/logo.png';
+                    });
+                }
+                media.className = 'game-thumbnail';
+                link.appendChild(media);
+                return link;
+            }
+            setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                const autocomplete = document.getElementById('autocomplete');
+                if (!searchInput || !autocomplete) return;
+                
+                searchInput.addEventListener('input', (e) => {
+                    const filter = e.target.value.toLowerCase().trim();
+                    if (!filter) {
+                        this.updateGameCount();
+                        this.hideSuggestions(autocomplete);
+                        return;
+                    }
+                    const matches = this.findMatches(filter);
+                    this.showSuggestions(matches, autocomplete);
+                    this.updateGameCount(matches.length);
+                });
+                searchInput.addEventListener('focus', () => {
+                    if (!searchInput.value.trim()) {
+                        const popularMatches = this.getPopularGames();
+                        this.showSuggestions(popularMatches, autocomplete);
+                    }
+                });
+                document.addEventListener('click', (e) => {
+                    if (!autocomplete.contains(e.target) && e.target !== searchInput) {
+                        this.hideSuggestions(autocomplete);
+                    }
+                });
+            }
+            findMatches(filter) {
+                return this.games.filter(game => {
+                    const names = [game.name, ...(game.altNames || [])];
+                    return names.some(name => name.toLowerCase().includes(filter));
+                });
+            }
+            getPopularGames() {
+                return this.games.filter(game => 
+                    this.popularGames.includes(game.name)
+                );
+            }
+            showSuggestions(matches, autocomplete) {
+                autocomplete.innerHTML = '';
+                if (matches.length > 0) {
+                    matches.forEach((match) => {
+                        const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        
+                        const thumbnail = document.createElement('img');
+                        thumbnail.src = match.thumbnail;
+                        thumbnail.alt = match.name;
+                        thumbnail.loading = 'lazy';
+                        thumbnail.addEventListener('error', () => {
+                            if (thumbnail.dataset.fallbackApplied === 'true') return;
+                            thumbnail.dataset.fallbackApplied = 'true';
+                            thumbnail.src = '/png/logo.png';
+                        });
+
+                        const label = document.createElement('span');
+                        label.textContent = match.name;
+
+                        item.appendChild(thumbnail);
+                        item.appendChild(label);
+                        item.onclick = () => this.selectSuggestedGame(match, autocomplete);
+                        autocomplete.appendChild(item);
+                    });
+                    autocomplete.style.display = 'block';
+                } else {
+                    this.hideSuggestions(autocomplete);
+                }
+            }
+            hideSuggestions(autocomplete) {
+                autocomplete.style.display = 'none';
+                autocomplete.innerHTML = '';
+            }
+            selectSuggestedGame(game, autocomplete) {
+                if (!game) return;
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = game.name;
+                }
+                this.hideSuggestions(autocomplete);
+                this.updateGameCount(1);
+            }
+            updateGameCount(count = null) {
+                const searchCount = document.getElementById('searchCount');
+                if (!searchCount) return;
+                if (count === null) {
+                    searchCount.textContent = `Showing all ${this.totalGames} games`;
+                } else {
+                    const label = count === 1 ? 'match' : 'matches';
+                    searchCount.textContent = `Found ${count} ${label} in ${this.totalGames} games`;
+                }
+            }
+            pickRandomGame() {
+                if (this.games.length === 0) return;
+                const randomGame = this.games[Math.floor(Math.random() * this.games.length)];       
+                window.location.href = this.getGameDestination(randomGame);
+            }
+            showError(message) {
+                const gallery = document.getElementById('gameGallery');
+                if (gallery) {
+                    gallery.innerHTML = `
+                        <div style="color: white; text-align: center; padding: 2rem; width: 100%;">
+                        <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                const loader = new GameLoader();
+                loader.init();
+                window.pickRandomGame = () => loader.pickRandomGame();
+            });
       </script>
    </body>
 </html>

@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="icon" type="image/png" href="png/logo.png"/>
-      <title>Truffled - Apps</title>
+      <title>Truffled - Art</title>
       <meta name="title" content="Truffled - Interactive Learning Resources">
       <meta name="description" content="Truffled is an educational platform offering interactive activities, brain-training challenges, and creative learning tools for students.">
       <meta property="og:type" content="website">
@@ -19,8 +19,6 @@
       <meta name="twitter:image" content="https://truffled.lol/png/logo.png">
       <link rel="canonical" href="https://truffled.lol/">
       <link rel="stylesheet" href="css/style.css">
-      <link rel="stylesheet" href="css/h.css">
-      <link rel="stylesheet" href="css/auto.css">
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
    </head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PXHK7Q7G3Z"></script>
@@ -42,7 +40,7 @@
       <div class="content">
          <h4>Apps</h4>
          <div id="searchCount" style="color: #ffffff; text-align: center; font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.5px;">Loading apps...</div>
-         <input type="text" id="searchInput" class="search-bar" placeholder="Search apps...">
+         <input type="text" id="searchInput" class="search-bar" placeholder="Search apps..." autocomplete="off">
          <div id="autocomplete" class="autocomplete-list"></div>
          <div class="container">
             <div class="game-gallery" id="gameGallery"></div>
@@ -51,10 +49,13 @@
       <script src="js/cloak.js"></script>
       <script src="/js/panic.js"></script>
       <script src="/js/search.js"></script>
-      <script src="/js/right.js"></script>
       <script src="/js/mobile.js"></script>
       <script src="/baremux/index.js"></script>
       <script>
+         const PROXY_SETTING_KEY = "proxyBackend";
+         const PENDING_PROXY_URL_KEY = "pendingProxyUrl";
+         const ACTIVE_PROXY_BACKEND_KEY = "activeProxyBackend";
+
          class AppLoader {
          constructor() {
              this.apps = [];
@@ -63,18 +64,48 @@
                  "Youtube",
                  "Discord",
                  "Tiktok",
-                 "Saavn (Music)",
+                 "Argon",
                  "Snapchat"
              ];
             this.connection = new BareMux.BareMuxConnection("/baremux/worker.js")
          }
+         getSavedProxyBackend() {
+             return localStorage.getItem(PROXY_SETTING_KEY) || "uv";
+         }
+         getEffectiveProxyBackend(value = this.getSavedProxyBackend()) {
+             return value === "scramjet" ? "scramjet" : "uv";
+         }
+         decodeUvUrl(url) {
+             if (typeof url !== "string" || !url.startsWith("/active/go/")) {
+                 return url;
+             }
+             const encoded = url.slice("/active/go/".length);
+             if (!encoded) {
+                 return url;
+             }
+             try {
+                 const [pathPart, ...queryParts] = encoded.split("?");
+                 const decodedPath = decodeURIComponent(pathPart);
+                 let output = "";
+                 for (let index = 0; index < decodedPath.length; index += 1) {
+                     output += index % 2
+                         ? String.fromCharCode(decodedPath.charCodeAt(index) ^ 2)
+                         : decodedPath[index];
+                 }
+                 return output + (queryParts.length ? "?" + queryParts.join("?") : "");
+             } catch (err) {
+                 console.error("app url decode error", err);
+                 return url;
+             }
+         }
          async init() {
              try {
-                 await this.connection.setTransport("/libcurl/index.mjs", [{ wisp: (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/" }]);
+                 await this.connection.setTransport("/libcurl/index.mjs", [{ websocket: (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/" }]);
                  await this.directSetIp();
                  await this.loadApps();
                  this.renderApps();
                  this.setupSearch();
+                 this.setupLaunchRouting();
                  this.updateAppCount();
                  
              } catch (err) {
@@ -83,7 +114,6 @@
              }
          }
          async directSetIp() {
-            
              try {
                  const res = await fetch('/ip');
                  if (!res.ok) throw new Error('fetch failed');
@@ -105,28 +135,39 @@
                  throw err;
              }
          }
-         
-         getAppUrl(app) {
-             let url = app.url;
+         getAppUrl(app, backend = this.getEffectiveProxyBackend()) {
+             let url = backend === "scramjet"
+                 ? (app.scramjetUrl || this.decodeUvUrl(app.url))
+                 : app.url;
+
              if (app.requiresPrefix) {
                  const prefix = sessionStorage.getItem("prefix") || '';
                  url = url.replace('{prefix}', prefix);
              }
-             if (typeof transformGameUrl === 'function') {
+             if (typeof transformGameUrl === 'function' && backend !== "scramjet") {
                  url = transformGameUrl(url);
              }
-             
              return url;
          }
-         getFramePage(url) {
+         getFramePage(app, url, backend = this.getEffectiveProxyBackend()) {
+             if (backend === "scramjet" && (app.frameType || "iframe") !== "unity") {
+                 return "/search.html";
+             }
              if (url.includes('/mobile.html?url=')) {
                  return '/iframe.html';
-             }            
-             const app = this.apps.find(a => url.includes(a.url.split('?')[0]));
+             }
              const frameType = app?.frameType || 'iframe';
              return frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
          }
-         
+         getLaunchHref(app, backend = this.getEffectiveProxyBackend()) {
+             const url = this.getAppUrl(app, backend);
+             const framePage = this.getFramePage(app, url, backend);
+             if (backend === "scramjet" && framePage === "/search.html") {
+                 return `${framePage}?backend=scramjet&url=${encodeURIComponent(url)}`;
+             }
+
+             return `${framePage}?url=${encodeURIComponent(url)}`;
+         }         
          renderApps() {
              const gallery = document.getElementById('gameGallery');
              if (!gallery) return;
@@ -166,19 +207,40 @@
              if (app.altNames && app.altNames.length > 0) {
                  div.setAttribute('data-names', [app.name, ...app.altNames].join(','));
              }
-             const url = this.getAppUrl(app);
-             const frameType = app.frameType || 'iframe';
-             const framePage = frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-             
+             const backend = this.getEffectiveProxyBackend();
+             const url = this.getAppUrl(app, backend);
+             const href = this.getLaunchHref(app, backend);           
              const mediaTag = app.mediaType === 'video' 
                  ? `<video src="${app.thumbnail}" autoplay muted loop playsinline class="game-thumbnail"></video>`
                  : `<img src="${app.thumbnail}" alt="${app.name}" class="game-thumbnail">`;
              div.innerHTML = `
-                 <a href="${framePage}?url=${encodeURIComponent(url)}" class="game-link" data-name="${app.name}">
+                 <a href="${href}" class="game-link" data-name="${app.name}" data-backend="${backend}" data-url="${encodeURIComponent(url)}">
                  ${mediaTag}
                  </a>
              `;
              return div;
+         }
+         setupLaunchRouting() {
+             const gallery = document.getElementById("gameGallery");
+             if (!gallery || gallery.dataset.launchRoutingReady === "true") {
+                 return;
+             }
+             gallery.dataset.launchRoutingReady = "true";
+             gallery.addEventListener("click", (event) => {
+                 const link = event.target.closest(".game-link[data-backend='scramjet']");
+                 if (!link) {
+                     return;
+                 }
+                 const rawUrl = link.dataset.url ? decodeURIComponent(link.dataset.url) : "";
+                 if (!rawUrl) {
+                     return;
+                 }
+                 event.preventDefault();
+                 sessionStorage.setItem(PENDING_PROXY_URL_KEY, rawUrl);
+                 sessionStorage.setItem(ACTIVE_PROXY_BACKEND_KEY, "scramjet");
+                 sessionStorage.removeItem("encodedUrl");
+                 location.href = link.getAttribute("href") || "/search.html";
+             });
          }
          setupSearch() {
              const searchInput = document.getElementById('searchInput');
@@ -218,29 +280,7 @@
              return this.apps.filter(app => 
                  this.popularApps.includes(app.name)
              );
-         }
-         showSuggestions(matches, autocomplete) {
-             autocomplete.innerHTML = '';
-             if (matches.length > 0) {
-                 matches.forEach(match => {
-                 const item = document.createElement('div');
-                 item.className = 'autocomplete-item';                
-                 const url = this.getAppUrl(match);
-                 const frameType = match.frameType || 'iframe';
-                 const framePage = frameType === 'unity' ? '/unityframe.html' : '/iframe.html';
-                 
-                 item.innerHTML = `
-                     <img src="${match.thumbnail}" alt="${match.name}">
-                     <span>${match.name}</span>
-                 `;
-                 item.onclick = () => window.location.href = `${framePage}?url=${encodeURIComponent(url)}`;
-                 autocomplete.appendChild(item);
-                 });
-                 autocomplete.style.display = 'block';
-             } else {
-                 autocomplete.style.display = 'none';
-             }
-         }        
+         }     
          showAllApps() {
              const appCards = document.querySelectorAll('.game-gallery .game');
              appCards.forEach(card => card.style.display = '');
@@ -288,5 +328,6 @@
              document.head.appendChild(style);
          });
       </script>
+      <script src="/active/register-sw.js" charset="UTF-8" defer></script>
    </body>
 </html>

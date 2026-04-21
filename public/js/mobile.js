@@ -92,7 +92,7 @@ async function loadGames() {
     const transformedGames = transformGameData(data.games);
     return transformedGames;
   } catch (error) {
-    console.error('Error loading games:', error);
+    console.error('error:', error);
     return [];
   }
 }

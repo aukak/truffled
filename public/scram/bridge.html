@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+    #proxy-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: none;
+      background: transparent;
+    }
+    body.host-mode #proxy-frame {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="proxy-frame" allowfullscreen referrerpolicy="no-referrer"></iframe>
+  <script src="/baremux/index.js"></script>
+  <script src="/scram/scramjet.codecs.js"></script>
+  <script src="/scram/scramjet.config.js?v=20260408-3"></script>
+  <script src="/scram/scramjet.bundle.js"></script>
+  <script src="bridge.js?v=20260408-7"></script>
+</body>
+</html>

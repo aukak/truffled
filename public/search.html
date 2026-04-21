@@ -9,7 +9,6 @@
    <link rel="manifest" href="manifest.json"/>
    <link rel="icon" href="/png/logo.png">
    <meta name="description" content="Educational resources and online learning">
-   <script src="/js/frame.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PXHK7Q7G3Z"></script>
 <script>
@@ -49,7 +48,7 @@
          <input id="teacher-setup-dialogs-container-searchbar" type="text" placeholder="Search anything..." autocomplete="off"/>
       </form>
    </div>
-   <iframe src="" id="iframeid" allowfullscreen></iframe>
+   <iframe src="" id="iframeid" allowfullscreen referrerpolicy="no-referrer"></iframe>
    <div id="footer">
       <img class="logo" src="/png/logo.png" onclick="window.location.href='/'" alt="Home" title="Home">
       <input id="teacher-setup-dialogs-container" type="text" placeholder="Search anything..." autocomplete="off"/>
@@ -61,105 +60,102 @@
          <img class="headericons" src="/png/code.svg" onclick="toggleEruda()" alt="Inspect" title="Inspect Element">
       </div>
    </div>
-   <script src="/active/uv.bundle.js" defer></script>
-   <script src="/active/uv.config.js" defer></script>
+   <script src="/active/uv.bundle.js"></script>
+   <script src="/active/uv.config.js"></script>
    <script src="/baremux/index.js"></script>
+   <script src="/scram/scramjet.codecs.js"></script>
+   <script src="/scram/scramjet.config.js?v=20260408-3"></script>
+   <script src="/scram/scramjet.bundle.js"></script>
    <script src="/js/history.js"></script>
    <script>
-      const iframe = document.getElementById('iframeid');
-      const searchInputFooter = document.getElementById('teacher-setup-dialogs-container');
+      const PROXY_SETTING_KEY = "proxyBackend";
+      const ACTIVE_PROXY_BACKEND_KEY = "activeProxyBackend";
+      const PENDING_PROXY_URL_KEY = "pendingProxyUrl";
+      const SCRAMJET_BRIDGE_READY = "scramjet-bridge-ready";
+      const SCRAMJET_BRIDGE_ERROR = "scramjet-bridge-error";
+      const SCRAMJET_HOST_URL_MESSAGE = "scramjet-host-url";
+      const SCRAMJET_HOST_FRAME_LOADED = "scramjet-host-frame-loaded";
+      const SCRAMJET_HOST_LOAD = "scramjet-load";
+      const SCRAMJET_HOST_BACK = "scramjet-back";
+      const SCRAMJET_HOST_FORWARD = "scramjet-forward";
+      const SCRAMJET_HOST_RELOAD = "scramjet-reload";
+      const iframe = document.getElementById("iframeid");
+      const searchInputFooter = document.getElementById("teacher-setup-dialogs-container");
       const searchBox = document.getElementById("gooei");
       const searchInputBox = document.getElementById("teacher-setup-dialogs-container-searchbar");
       const form = document.getElementById("uv-form");
       const loadingBar = document.getElementById("loadingbar");
-      const connection = new BareMux.BareMuxConnection("/baremux/worker.js")
-      let lastURL = '';
+      const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+      const scramPrefix = "/scram/service/";
+      const scramHostUrl = "/scram/bridge.html?mode=host&v=20260408-7";
+      let lastIframeLocation = "";
+      let lastDecodedUrl = "";
       let isErudaLoaded = false;
-      
+      let currentBackend = "uv";
+      let transportPromise = null;
+      let scramjetHostPromise = null;
+      let scramjetHostReady = false;
+      window.__scramjet$config = {
+         ...(window.__scramjet$config || {}),
+         prefix: scramPrefix,
+         config: "/scram/scramjet.config.js?v=20260408-3",
+         bundle: "/scram/scramjet.bundle.js",
+         worker: "/scram/scramjet.worker.js",
+         client: "/scram/scramjet.client.js?v=20260408-3",
+         codecs: "/scram/scramjet.codecs.js",
+      };
       function isUrl(val = "") {
          return /^https?:\/\//i.test(val) || (val.includes(".") && val.slice(0, 1) !== " ");
       }
-      
-      function fn_reload() {
-         try {
-            iframe.contentWindow.location.reload();
-         } catch (e) {
-            console.error('reload:', e);
-         }
+      function getSavedProxyBackend() {
+         return localStorage.getItem(PROXY_SETTING_KEY) || "uv";
       }
-      
-      function goback() {
-         try {
-            iframe.contentWindow.history.back();
-         } catch (e) {
-            console.error('failed, go back:', e);
-         }
+      function getEffectiveProxyBackend(value = getSavedProxyBackend()) {
+         return value === "scramjet" ? "scramjet" : "uv";
       }
-      
-      function rotatetozone() {
-         try {
-            iframe.contentWindow.history.forward();
-         } catch (e) {
-            console.error('failed, go forward:', e);
-         }
-      }            
-      function toggleEruda() {
-         try {
-            const iframeWindow = iframe.contentWindow;
-            
-            if (isErudaLoaded && iframeWindow.eruda) {
-               iframeWindow.eruda.destroy();
-               isErudaLoaded = false;
-            } else {
-               const erudaScript = iframeWindow.document.createElement('script');
-               erudaScript.src = "https://cdn.jsdelivr.net/npm/eruda";
-               erudaScript.onload = () => {
-                  if (iframeWindow.eruda) {
-                     iframeWindow.eruda.init({ 
-                        tool: ['console', 'elements', 'network', 'resources', 'info'] 
-                     });
-                     iframeWindow.eruda.show();
-                     isErudaLoaded = true;
-                  }
-               };
-               iframeWindow.document.head.appendChild(erudaScript);
-            }
-         } catch (e) {
-            alert("cant load");
-            console.error('error', e);
-         }
-      }      
-      async function loadNewPage(url) {
-         if (!url) return;
-         
-         if (searchInputBox) searchInputBox.blur();
 
+      function getPendingProxyUrl() {
+         return sessionStorage.getItem(PENDING_PROXY_URL_KEY) || "";
+      }
+
+      function getUrlParameter(name) {
+         const params = new URLSearchParams(window.location.search);
+         return params.get(name) || "";
+      }
+
+      function getStoredEncodedUrl() {
+         return sessionStorage.getItem("encodedUrl") || "";
+      }
+
+      function normalizeInputToUrl(value) {
+         let url = value.trim();
+         if (!url) return "";
          if (!isUrl(url)) {
             url = "https://duckduckgo.com/?t=h_&q=" + encodeURIComponent(url);
          } else if (!/^https?:\/\//i.test(url)) {
             url = "https://" + url;
-         }   
-
-         const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-         if (await connection.getTransport() !== "/libcurl/index.mjs") {
-            await connection.setTransport("/libcurl/index.mjs", [{ wisp: wispUrl }]);
          }
-         const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
-         iframe.src = encodedUrl;
-         updateSearchBars(url);
-         showLoadingBar();
+         return url;
       }
-      
+
+      function getWispUrl() {
+         return (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+      }
+
       function updateSearchBars(url) {
          searchInputFooter.value = url;
          searchInputBox.value = url;
       }
-      
+
       function showLoadingBar() {
          loadingBar.style.width = "10%";
          loadingBar.style.opacity = "1";
       }
-      
+
+      function configureIframeForBackend(backend) {
+         iframe.setAttribute("referrerpolicy", "no-referrer");
+      }
+
       function hideLoadingBar() {
          loadingBar.style.width = "100%";
          setTimeout(() => {
@@ -167,91 +163,385 @@
             loadingBar.style.width = "0";
          }, 300);
       }
-      
-      function checkIframeURL() {
-         try {
-            const currentURL = iframe.contentWindow.location.href;
-            if (currentURL !== lastURL) {
-               lastURL = currentURL;
-               
-               const websitePath = currentURL
-                  .replace(window.location.origin, "")
-                  .replace(__uv$config.prefix, "");
-               
-               localStorage.setItem("decoded", websitePath);
-               
-               if (typeof __uv$config !== 'undefined' && __uv$config.decodeUrl) {
-                  const decodedValue = __uv$config.decodeUrl(websitePath);
-                  updateSearchBars(decodedValue);
-                  
-                  if (decodedValue !== "about:blank") {
-                     addToHistory(decodedValue);
-                  }
-               } else {
-                  updateSearchBars(currentURL);
+
+      function rememberNavigation(url, backend) {
+         sessionStorage.setItem(PENDING_PROXY_URL_KEY, url);
+         sessionStorage.setItem("encodedUrl", __uv$config.encodeUrl(url));
+         sessionStorage.setItem(ACTIVE_PROXY_BACKEND_KEY, backend);
+      }
+
+      async function waitForRegistrationActivation(registration) {
+         if (registration.active || registration.waiting) {
+            return registration;
+         }
+
+         const worker = registration.installing;
+         if (!worker) {
+            return registration;
+         }
+
+         await new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(resolve, 10000);
+
+            worker.addEventListener("statechange", () => {
+               if (worker.state === "activated") {
+                  clearTimeout(timeoutId);
+                  resolve();
+               } else if (worker.state === "redundant") {
+                  clearTimeout(timeoutId);
+                  reject(new Error("Service worker became redundant during activation."));
                }
-               
-               isErudaLoaded = false;
-            }
-         } catch (e) {
+            });
+         });
+
+         return registration;
+      }
+
+      async function ensureTransport() {
+         if (!transportPromise) {
+            transportPromise = connection.setTransport("/libcurl/index.mjs", [
+               { websocket: getWispUrl() }
+            ]).catch((error) => {
+               transportPromise = null;
+               throw error;
+            });
+         }
+         return transportPromise;
+      }
+
+      async function ensureUvServiceWorker() {
+         const registration = await navigator.serviceWorker.register("/active/sw.js", {
+            scope: __uv$config.prefix,
+         });
+         return waitForRegistrationActivation(registration);
+      }
+
+      function ensureScramjetHostIframe() {
+         if (iframe.dataset.scramjetHost !== "true" || iframe.src !== location.origin + scramHostUrl) {
+            scramjetHostReady = false;
+            iframe.dataset.scramjetHost = "true";
+            iframe.src = scramHostUrl;
          }
       }
-      
+
+      async function ensureScramjetHost() {
+         if (scramjetHostReady && iframe.dataset.scramjetHost === "true") {
+            return;
+         }
+
+         if (!scramjetHostPromise) {
+            scramjetHostPromise = new Promise((resolve, reject) => {
+               ensureScramjetHostIframe();
+
+               const timeoutId = setTimeout(() => {
+                  scramjetHostPromise = null;
+                  reject(new Error("Timed out while waiting for the Scramjet host."));
+               }, 15000);
+
+               function onMessage(event) {
+                  if (event.origin !== location.origin || event.source !== iframe.contentWindow) {
+                     return;
+                  }
+
+                  if (event.data?.type === SCRAMJET_BRIDGE_READY) {
+                     clearTimeout(timeoutId);
+                     scramjetHostReady = true;
+                     scramjetHostPromise = Promise.resolve();
+                     window.removeEventListener("message", onMessage);
+                     resolve();
+                  } else if (event.data?.type === SCRAMJET_BRIDGE_ERROR) {
+                     clearTimeout(timeoutId);
+                     scramjetHostPromise = null;
+                     window.removeEventListener("message", onMessage);
+                     reject(new Error(event.data.message || "Scramjet host failed to initialize."));
+                  }
+               }
+
+               window.addEventListener("message", onMessage);
+            }).catch((error) => {
+               scramjetHostPromise = null;
+               throw error;
+            });
+         }
+
+         return scramjetHostPromise;
+      }
+
+      function encodeScramjetUrl(url) {
+         return window.__scramjet$bundle.rewriters.url.encodeUrl(url, new URL(url));
+      }
+
+      function decodeScramjetUrl(url) {
+         return window.__scramjet$bundle.rewriters.url.decodeUrl(url);
+      }
+
+      async function loadNewPage(rawUrl, backend = getEffectiveProxyBackend()) {
+         const url = normalizeInputToUrl(rawUrl);
+         if (!url) return;
+
+         currentBackend = backend;
+         isErudaLoaded = false;
+         rememberNavigation(url, backend);
+         updateSearchBars(url);
+         configureIframeForBackend(backend);
+         showLoadingBar();
+         searchInputBox.blur();
+
+         try {
+            if (backend === "uv") {
+               scramjetHostReady = false;
+               scramjetHostPromise = null;
+               iframe.dataset.scramjetHost = "false";
+               await ensureTransport();
+               await ensureUvServiceWorker();
+               iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+            } else {
+               await ensureScramjetHost();
+               iframe.contentWindow.postMessage({
+                  type: SCRAMJET_HOST_LOAD,
+                  url,
+               }, location.origin);
+            }
+         } catch (error) {
+            hideLoadingBar();
+            console.error("proxy load error", error);
+         }
+      }
+
+      function decodeIframeUrl(currentUrl) {
+         if (currentUrl.startsWith(window.location.origin + __uv$config.prefix)) {
+            const encodedPath = currentUrl
+               .slice(window.location.origin.length)
+               .replace(__uv$config.prefix, "");
+            return __uv$config.decodeUrl(encodedPath);
+         }
+
+         if (currentUrl.startsWith(window.location.origin + scramPrefix)) {
+            return decodeScramjetUrl(currentUrl);
+         }
+
+         return currentUrl;
+      }
+
+      function checkIframeURL() {
+         if (currentBackend === "scramjet") {
+            return;
+         }
+
+         try {
+            const currentURL = iframe.contentWindow.location.href;
+            if (!currentURL || currentURL === lastIframeLocation) {
+               return;
+            }
+
+            lastIframeLocation = currentURL;
+            const decodedValue = decodeIframeUrl(currentURL);
+
+            if (!decodedValue || decodedValue === "about:blank" || decodedValue === lastDecodedUrl) {
+               return;
+            }
+
+            lastDecodedUrl = decodedValue;
+            updateSearchBars(decodedValue);
+            rememberNavigation(decodedValue, currentBackend);
+            addToHistory(decodedValue);
+            isErudaLoaded = false;
+         } catch (error) {
+         }
+      }
+
       function showSearchBox() {
          searchInputBox.value = searchInputFooter.value;
          searchBox.style.opacity = "1";
          searchBox.style.visibility = "visible";
          setTimeout(() => searchInputBox.focus(), 50);
       }
-      
+
       function hideSearchBox() {
          searchBox.style.opacity = "0";
          searchBox.style.visibility = "hidden";
       }
-      
-      form.addEventListener('submit', (e) => {
-         e.preventDefault();
+
+      function getInitialUrl() {
+         const queryUrl = getUrlParameter("url");
+         if (queryUrl) return queryUrl;
+
+         const pendingProxyUrl = getPendingProxyUrl();
+         if (pendingProxyUrl) return pendingProxyUrl;
+
+         const encodedUrl = getStoredEncodedUrl();
+         if (!encodedUrl) return "";
+
+         try {
+            return __uv$config.decodeUrl(encodedUrl);
+         } catch (error) {
+            return "";
+         }
+      }
+
+      window.fn_reload = function () {
+         try {
+            if (currentBackend === "scramjet") {
+               iframe.contentWindow.postMessage({ type: SCRAMJET_HOST_RELOAD }, location.origin);
+               return;
+            }
+
+            iframe.contentWindow.location.reload();
+         } catch (error) {
+            console.error("reload:", error);
+         }
+      };
+
+      window.goback = function () {
+         try {
+            if (currentBackend === "scramjet") {
+               iframe.contentWindow.postMessage({ type: SCRAMJET_HOST_BACK }, location.origin);
+               return;
+            }
+
+            iframe.contentWindow.history.back();
+         } catch (error) {
+            console.error("failed, go back:", error);
+         }
+      };
+
+      window.rotatetozone = function () {
+         try {
+            if (currentBackend === "scramjet") {
+               iframe.contentWindow.postMessage({ type: SCRAMJET_HOST_FORWARD }, location.origin);
+               return;
+            }
+
+            iframe.contentWindow.history.forward();
+         } catch (error) {
+            console.error("failed, go forward:", error);
+         }
+      };
+
+      window.toggleEruda = function () {
+         try {
+            const iframeWindow = iframe.contentWindow;
+
+            if (isErudaLoaded && iframeWindow.eruda) {
+               iframeWindow.eruda.destroy();
+               isErudaLoaded = false;
+            } else {
+               const erudaScript = iframeWindow.document.createElement("script");
+               erudaScript.src = "https://cdn.jsdelivr.net/npm/eruda";
+               erudaScript.onload = () => {
+                  if (iframeWindow.eruda) {
+                     iframeWindow.eruda.init({
+                        tool: ["console", "elements", "network", "resources", "info"]
+                     });
+                     iframeWindow.eruda.show();
+                     isErudaLoaded = true;
+                  }
+               };
+               iframeWindow.document.head.appendChild(erudaScript);
+            }
+         } catch (error) {
+            alert("cant load");
+            console.error("error", error);
+         }
+      };
+
+      form.addEventListener("submit", (event) => {
+         event.preventDefault();
          const input = searchInputBox.value.trim();
          if (input) {
-            loadNewPage(input);
+            loadNewPage(input, getEffectiveProxyBackend());
             hideSearchBox();
          }
       });
-      
-      searchInputFooter.addEventListener('mousedown', (e) => {
-         e.preventDefault();
-         e.stopPropagation();
+
+      searchInputFooter.addEventListener("mousedown", (event) => {
+         event.preventDefault();
+         event.stopPropagation();
          showSearchBox();
       });
-      
-      searchInputFooter.addEventListener('keydown', (e) => {
-         if (e.key === 'Enter') {
-            e.preventDefault();
-            loadNewPage(searchInputFooter.value.trim());
+
+      searchInputFooter.addEventListener("keydown", (event) => {
+         if (event.key === "Enter") {
+            event.preventDefault();
+            loadNewPage(searchInputFooter.value.trim(), getEffectiveProxyBackend());
          }
       });
-      
-      searchInputBox.addEventListener('keydown', (e) => {
-         if (e.key === 'Enter') {
-            e.preventDefault();
-            loadNewPage(searchInputBox.value.trim());
+
+      searchInputBox.addEventListener("keydown", (event) => {
+         if (event.key === "Enter") {
+            event.preventDefault();
+            loadNewPage(searchInputBox.value.trim(), getEffectiveProxyBackend());
             hideSearchBox();
-         } else if (e.key === 'Escape') {
-            hideSearchBox();
-         }
-      });
-      
-      document.addEventListener('click', (e) => {
-         if (!searchBox.contains(e.target) && e.target !== searchInputFooter) {
+         } else if (event.key === "Escape") {
             hideSearchBox();
          }
       });
-      
-      iframe.addEventListener('load', () => {
+
+      document.addEventListener("click", (event) => {
+         if (!searchBox.contains(event.target) && event.target !== searchInputFooter) {
+            hideSearchBox();
+         }
+      });
+
+      window.addEventListener("message", (event) => {
+         if (event.origin !== location.origin || event.source !== iframe.contentWindow) {
+            return;
+         }
+
+         if (event.data?.type === SCRAMJET_HOST_URL_MESSAGE) {
+            const decodedValue = event.data.url;
+
+            if (!decodedValue || decodedValue === "about:blank" || decodedValue === lastDecodedUrl) {
+               return;
+            }
+
+            lastDecodedUrl = decodedValue;
+            updateSearchBars(decodedValue);
+            rememberNavigation(decodedValue, currentBackend);
+            addToHistory(decodedValue);
+            isErudaLoaded = false;
+         } else if (event.data?.type === SCRAMJET_HOST_FRAME_LOADED) {
+            hideLoadingBar();
+         }
+      });
+
+      iframe.addEventListener("load", () => {
+         if (currentBackend === "scramjet") {
+            return;
+         }
+
          hideLoadingBar();
+         checkIframeURL();
       });
-      
-      setInterval(checkIframeURL, 100);
+
+      window.addEventListener("load", async () => {
+         const queryBackend = getUrlParameter("backend");
+         currentBackend = queryBackend || sessionStorage.getItem(ACTIVE_PROXY_BACKEND_KEY) || getEffectiveProxyBackend();
+         const initialUrl = getInitialUrl();
+         configureIframeForBackend(currentBackend);
+
+         if (initialUrl) {
+            rememberNavigation(initialUrl, currentBackend);
+         }
+
+         if (currentBackend === "scramjet") {
+            ensureScramjetHost().catch((error) => {
+               console.error("scramjet host preload error", error);
+            });
+         }
+
+         if (!initialUrl) {
+            updateSearchBars("about:blank");
+            return;
+         }
+
+         updateSearchBars(initialUrl);
+         await loadNewPage(initialUrl, currentBackend);
+      });
+
+      setInterval(checkIframeURL, 250);
    </script>
+   <script src="js/cloak.js"></script>
+   <script src="/active/register-sw.js" charset="UTF-8" defer></script>
 </body>
 </html>

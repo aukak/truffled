@@ -3,72 +3,84 @@
     {
       "name": "Youtube",
       "url": "/active/go/hvtrs8%2F-ilvkdkows%2Cngrfvrn%2Cdg%2F",
+      "scramjetUrl": "https://invidious.nerdvpn.de/",
       "thumbnail": "png/apps/youtube.webp",
       "frameType": "iframe"
     },
     {
       "name": "Tiktok",
       "url": "/active/go/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2F",
+      "scramjetUrl": "https://www.tiktok.com/",
       "thumbnail": "png/apps/tiktok.webp",
       "frameType": "iframe"
     },
     {
       "name": "Argon",
       "url": "/active/go/hvtrs8%2F-jmbk.mng%2Fraeeq%2Fouqia%2Fcpr.jtol",
+      "scramjetUrl": "https://jobi.one/pages/music/app.html",
       "thumbnail": "/png/apps/argon.webp",
       "frameType": "iframe"
     },
     {
       "name": "Gauth",
       "url": "/active/go/hvtrs8%2F-wuw%2Cgcuvhoavh%2Ccmm-",
+      "scramjetUrl": "https://www.gauthmath.com/",
       "thumbnail": "png/apps/guath.webp",
       "frameType": "iframe"
     },
     {
       "name": "Pinterest",
       "url": "/active/go/hvtrs8%2F-wuw%2Cpknvepeqt%2Ccmm-",
+      "scramjetUrl": "https://www.pinterest.com/",
       "thumbnail": "png/apps/pinterest.webp",
       "frameType": "iframe"
     },
     {
       "name": "DeepAI",
       "url": "/active/go/hvtrs8%2F-dgerak.mre%2F",
+      "scramjetUrl": "https://deepai.org/",
       "thumbnail": "png/apps/deepai.webp",
       "frameType": "iframe"
     },
     {
       "name": "Discord",
       "url": "/active/go/hvtrs8%2F-dksaopd%2Ccmm",
+      "scramjetUrl": "https://discord.com/",
       "thumbnail": "/png/apps/dsc.webp",
       "frameType": "iframe"
     },
     {
       "name": "Twitch",
       "url": "/active/go/hvtrs8%2F-wuw%2Ctuivcj.vv-",
+      "scramjetUrl": "https://www.twitch.tv/",
       "thumbnail": "/png/apps/twitch.webp",
       "frameType": "iframe"
     },
     {
       "name": "Amazon",
       "url": "/active/go/hvtrs8%2F-wuw%2Caoaxol.aoo%2F",
+      "scramjetUrl": "https://www.amazon.com/",
       "thumbnail": "png/apps/amazon.webp",
       "frameType": "iframe"
     },
     {
       "name": "SpenFlix",
       "url": "/active/go/hvtrs8%2F-wctah%2Csrelcgrfets%2Cx%7Bz-",
+      "scramjetUrl": "https://watch.spencerdevs.xyz/",
       "thumbnail": "/png/apps/movies.webp",
       "frameType": "iframe"
     },
         {
       "name": "Apple Music",
       "url": "/active/go/hvtrs8%2F-mwskc%2Carpne%2Ccmm-uq%2Fleu",
+      "scramjetUrl": "https://music.apple.com/us/new",
       "thumbnail": "/png/apps/applemusic.webp",
       "frameType": "iframe"
     },
     {
       "name": "Snapchat",
       "url": "/active/go/hvtrs8%2F-wuw%2Cslarcjav.aoo%2F",
+      "scramjetUrl": "https://www.snapchat.com/",
       "thumbnail": "/png/apps/snap.webp",
       "frameType": "iframe"
     }

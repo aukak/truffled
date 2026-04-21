@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://truffled.lol/png/logo.png">
 <link rel="canonical" href="https://truffled.lol/">
 <link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/themes.css">
+<link rel="stylesheet" href="/css/theme.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PXHK7Q7G3Z"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -28,27 +28,6 @@
   gtag('config', 'G-PXHK7Q7G3Z');
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
-#panicUrlInput {
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  border: 1px solid #1c383b;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  display: block;
-  background: transparent;
-  color: #fff;
-  outline: none;
-  width: 80%;
-}
-#panickeysettings button:last-of-type {
-  margin-left: 0;
-  display: block;
-}
-</style>
 </head>
 <body>
       <div class="navbar-right">
@@ -60,16 +39,14 @@
           <a href="s"><img src="png/gear-solid.svg" alt="s"></a>
       </div>
 <div class="settings-container">
-  <!-- <section id="themesettings" class="settings-section">
-    <h2>themes</h2>
-    <p>customize your experience</p>
-    <div class="theme-selector-wrapper">
-      <label class="theme-selector-label" for="themeDropdown">Select Theme:</label>
-      <select id="themeDropdown" class="theme-dropdown">
-      </select>
-      <div class="theme-preview-box" id="themePreview"></div>
-    </div>
-  </section> -->
+  <section id="cloaksettings" class="settings-section">
+    <h2>tab cloak</h2>
+    <p>disguise the tab title and icon</p>
+    <select id="cloakSelect"> 
+      <option value="">none (default)</option>
+    </select>
+    <button id="cloakReset">reset cloak</button>
+  </section>
   <section id="adsettings" class="settings-section">
     <h2>ads</h2>
     <div class="toggle-switch">
@@ -77,6 +54,15 @@
       <input type="checkbox" id="adsToggle">
     </div>
     <p id="adsStatus" style="margin-top:5px;"></p>
+  </section>
+  <section id="proxysettings" class="settings-section">
+    <h2>proxy</h2>
+    <p>choose which proxy the home search uses</p>
+    <select id="proxySelect">
+      <option value="uv">uv static (default)</option>
+      <option value="scramjet">scramjet (fallback)</option>
+    </select>
+    <p id="proxyStatus" style="margin-top:5px;"></p>
   </section>
 <section id="mobilesettings" class="settings-section">
   <h2>mobile mode</h2>
@@ -114,6 +100,28 @@
 <script>
 const adsToggle=document.getElementById("adsToggle");
 const adsStatus=document.getElementById("adsStatus");
+const proxySelect=document.getElementById("proxySelect");
+const proxyStatus=document.getElementById("proxyStatus");
+const PROXY_SETTING_KEY="proxyBackend";
+function getSavedProxyBackend(){
+  const savedValue=localStorage.getItem(PROXY_SETTING_KEY);
+  if(savedValue==="auto"){
+    localStorage.setItem(PROXY_SETTING_KEY,"uv");
+    return "uv";
+  }
+  return savedValue||"uv";
+}
+function getEffectiveProxyBackend(value=getSavedProxyBackend()){
+  return value==="scramjet"?"scramjet":"uv";
+}
+function updateProxyStatus(value=getSavedProxyBackend()){
+  const effective=getEffectiveProxyBackend(value);
+  proxyStatus.textContent=`${effective} is selected for home search.`;
+}
+function updateProxySetting(value){
+  localStorage.setItem(PROXY_SETTING_KEY,value);
+  updateProxyStatus(value);
+}
 function updateAdSetting(s){
   localStorage.setItem("adsEnabled",s);
   adsStatus.textContent=s?"ads are on.":"ads are off.";
@@ -124,13 +132,15 @@ window.addEventListener("load",()=>{
   const s=e===null?true:e==="true";
   adsToggle.checked=s;
   adsStatus.textContent=s?"ads are on.":"ads are off.";
+  const proxyBackend=getSavedProxyBackend();
+  proxySelect.value=proxyBackend;
+  updateProxyStatus(proxyBackend);
 });
 adsToggle.addEventListener("change",()=>{updateAdSetting(adsToggle.checked);});
-
+proxySelect.addEventListener("change",()=>{updateProxySetting(proxySelect.value);});
 function openInAboutBlank() {
   const currentUrl = window.location.href;
   const aboutBlankWindow = window.open('about:blank', '_blank');
-
   if (aboutBlankWindow) {
     aboutBlankWindow.document.write(`
       <!DOCTYPE html>
@@ -152,7 +162,6 @@ function openInAboutBlank() {
     alert("popup blocked, please allow popups for this site");
   }
 }
-
 function openIframe(){
   const w=window.open("about:blank");
   if(!w){alert("blocked");return;}
@@ -215,9 +224,8 @@ async function exportData(format="save"){
   link.download=`truffled_backup_${date}.${ext}`;
   link.click();
   URL.revokeObjectURL(link.href);
-  alert(`Data exported as .${ext}`);
+  alert(`data exported as .${ext}`);
 }
-
 function importData(){
   const input=document.createElement("input");
   input.type="file";
@@ -248,13 +256,10 @@ function importData(){
   };
   input.click();
 }
-
-
 </script>
-
-<!--<script src="/js/themes.js"></script>-->
 <script src="/js/mobile.js"></script>
-<script src="/js/right.js"></script>
 <script src="/js/panic.js"></script>
+<script src="/js/cloak.js"></script>
+<script src="/js/theme.js"></script>
 </body>
 </html>

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Google",
+    "title": "Google",
+    "icon": "https://www.google.com/favicon.ico"
+  },
+  {
+    "name": "Google Docs",
+    "title": "Google Docs",
+    "icon": "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"
+  },
+  {
+    "name": "Google Drive",
+    "title": "My Drive - Google Drive",
+    "icon": "https://ssl.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
+  },
+  {
+    "name": "Google Classroom",
+    "title": "Google Classroom",
+    "icon": "https://ssl.gstatic.com/classroom/favicon.png"
+  },
+  {
+    "name": "Google Slides",
+    "title": "Google Slides",
+    "icon": "https://ssl.gstatic.com/docs/presentations/images/favicon5.ico"
+  },
+  {
+    "name": "Google Sheets",
+    "title": "Google Sheets",
+    "icon": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico"
+  },
+  {
+    "name": "Gmail",
+    "title": "Gmail",
+    "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico"
+  },
+  {
+    "name": "IXL",
+    "title": "IXL | Dashboard",
+    "icon": "https://www.ixl.com/favicon.ico"
+  },
+  {
+    "name": "Canvas",
+    "title": "Dashboard",
+    "icon": "https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico"
+  },
+  {
+    "name": "Khan Academy",
+    "title": "Khan Academy | Free Online Courses",
+    "icon": "https://cdn.kastatic.org/images/favicon.ico"
+  },
+  {
+    "name": "Clever",
+    "title": "Clever | Portal",
+    "icon": "https://apps.clever.com/favicon.ico"
+  },
+  {
+    "name": "Schoology",
+    "title": "Home | Schoology",
+    "icon": "https://app.schoology.com/sites/all/themes/flavor/favicon.ico"
+  },
+  {
+    "name": "Quizlet",
+    "title": "Quizlet",
+    "icon": "https://quizlet.com/favicon.ico"
+  },
+  {
+    "name": "Edpuzzle",
+    "title": "Edpuzzle",
+    "icon": "https://edpuzzle.imgix.net/favicons/favicon-32.png"
+  },
+  {
+    "name": "Desmos",
+    "title": "Desmos | Graphing Calculator",
+    "icon": "https://www.desmos.com/assets/img/apps/graphing/favicon.ico"
+  },
+  {
+    "name": "Delta Math",
+    "title": "DeltaMath",
+    "icon": "https://www.deltamath.com/favicon.ico"
+  },
+  {
+    "name": "Quizizz",
+    "title": "Quizizz",
+    "icon": "https://quizizz.com/favicon.ico"
+  },
+  {
+    "name": "PowerSchool",
+    "title": "PowerSchool",
+    "icon": "https://www.powerschool.com/favicon.ico"
+  }
+]
