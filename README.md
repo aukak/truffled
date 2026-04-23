@@ -9,9 +9,9 @@
 - **Hotline Miami**
 ### -----------------------------
 ## A proxy that can run:
-- **Tiktok**
+- **TikTok**
 - **Youtube**
-- **Geforce Now**
+- **GeForce Now**
 ### -----------------------------
 ## A tools page that has:
 - **Movies**
