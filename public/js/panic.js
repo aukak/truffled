@@ -10,9 +10,9 @@ function handlePanicKey(event) {
 function safeGet(id) {
     return document.getElementById(id) || null;
 }
-    function displayCurrentPanicKey() {
-        const el = safeGet('currentPanicKey');
-    if (!el) return; 
+function displayCurrentPanicKey() {
+    const el = safeGet('currentPanicKey');
+    if (!el) return;
 
     const panicKey = localStorage.getItem('panicKey') || '`';
     el.textContent = `your key: '${panicKey}'`;
