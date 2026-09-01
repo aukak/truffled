@@ -9,12 +9,7 @@ The *best* unblocked gaming website for school, with multiple **games**, great *
 We have multiple webports such as: Balatro, Deltarune, Hollow knight, Celeste, Terraria, Cuphead & Brotato. 
 * How do i find links to play unblocked? You can join the [discord](https://discord.gg/vVqY36mzvj) and search for links in the links channel & community links channel!!
 
+> [!NOTE]
+>Truffled does NOT host any assets publicly.
 
-
-
-
-
-
-
-
-
+---
